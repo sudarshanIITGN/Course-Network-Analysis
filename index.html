@@ -1,0 +1,1038 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Nishaant Choksi ">Nishaant Choksi </option>
+                                
+                                    <option value="Rosaldo, Renato">Rosaldo, Renato</option>
+                                
+                                    <option value="Culture and truth: the remaking of social analysis: with a new introduction">Culture and truth: the remaking of social analysis: with a new introduction</option>
+                                
+                                    <option value="Podolefsky, Aron and Brown, Peter J.">Podolefsky, Aron and Brown, Peter J.</option>
+                                
+                                    <option value="Applying Anthropology:An Introductory Reader">Applying Anthropology:An Introductory Reader</option>
+                                
+                                    <option value="Levi-Strauss, Claude">Levi-Strauss, Claude</option>
+                                
+                                    <option value="Savage mind">Savage mind</option>
+                                
+                                    <option value="Singh, Bhrigupati">Singh, Bhrigupati</option>
+                                
+                                    <option value="Poverty and the quest for life: spiritual and material striving in rural India">Poverty and the quest for life: spiritual and material striving in rural India</option>
+                                
+                                    <option value="Uberoi, Patrica">Uberoi, Patrica</option>
+                                
+                                    <option value="Anthropology in the east: the founders of Indian sociology and anthropology">Anthropology in the east: the founders of Indian sociology and anthropology</option>
+                                
+                                    <option value="Böck, Monika and Rao, Aparna">Böck, Monika and Rao, Aparna</option>
+                                
+                                    <option value="Culture, creation, and procreation: concepts of kinship in South Asian practice">Culture, creation, and procreation: concepts of kinship in South Asian practice</option>
+                                
+                                    <option value="Sur, Malini">Sur, Malini</option>
+                                
+                                    <option value="Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border">Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border</option>
+                                
+                                    <option value="Graeber, David ">Graeber, David </option>
+                                
+                                    <option value="Toward an anthropological theory of value: the false coin of our own dreams">Toward an anthropological theory of value: the false coin of our own dreams</option>
+                                
+                                    <option value="Lazar, Sian">Lazar, Sian</option>
+                                
+                                    <option value="Anthropology of citizenship: a reader">Anthropology of citizenship: a reader</option>
+                                
+                                    <option value="Uddin, Nasir">Uddin, Nasir</option>
+                                
+                                    <option value="Rohingya: an ethnography of subhuman life ">Rohingya: an ethnography of subhuman life </option>
+                                
+                                    <option value="Akmajian">Akmajian</option>
+                                
+                                    <option value="Linguistics: an introduction to language and communication, 5th ed.">Linguistics: an introduction to language and communication, 5th ed.</option>
+                                
+                                    <option value="Ahearn, Laura M. ">Ahearn, Laura M. </option>
+                                
+                                    <option value="Living language: an introduction to linguistic anthropology ">Living language: an introduction to linguistic anthropology </option>
+                                
+                                    <option value="Ungerer, Friedrich ">Ungerer, Friedrich </option>
+                                
+                                    <option value="Introduction to cognitive linguistics">Introduction to cognitive linguistics</option>
+                                
+                                    <option value="Kramer, Seth">Kramer, Seth</option>
+                                
+                                    <option value="Linguists">Linguists</option>
+                                
+                                    <option value="Milroy, Lesley">Milroy, Lesley</option>
+                                
+                                    <option value="Sociolinguistics: method and interpretation">Sociolinguistics: method and interpretation</option>
+                                
+                                    <option value="Madhumita Sengupta, V.N. Prabhakar and Sharada CV">Madhumita Sengupta, V.N. Prabhakar and Sharada CV</option>
+                                
+                                    <option value="Haywood, John">Haywood, John</option>
+                                
+                                    <option value="Penguin historical atlas of the vikings">Penguin historical atlas of the vikings</option>
+                                
+                                    <option value="Maisels, Charles Keith">Maisels, Charles Keith</option>
+                                
+                                    <option value="Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China">Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China</option>
+                                
+                                    <option value="Chandra, Satish">Chandra, Satish</option>
+                                
+                                    <option value="Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat">Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat</option>
+                                
+                                    <option value="Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)">Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)</option>
+                                
+                                    <option value="Shelach-Lavi, Gideon">Shelach-Lavi, Gideon</option>
+                                
+                                    <option value="Archaeology of early China: from prehistory to the Han dynasty">Archaeology of early China: from prehistory to the Han dynasty</option>
+                                
+                                    <option value="Bandyopadhyay, Sekhar">Bandyopadhyay, Sekhar</option>
+                                
+                                    <option value="From Plassey to partition: a history of modern India">From Plassey to partition: a history of modern India</option>
+                                
+                                    <option value="From plassey to partition and after: a history of modern India, 2nd ed.">From plassey to partition and after: a history of modern India, 2nd ed.</option>
+                                
+                                    <option value="Bauer, Susan Wise">Bauer, Susan Wise</option>
+                                
+                                    <option value="History of the ancient world: from the earliest accounts to the fall of Rome">History of the ancient world: from the earliest accounts to the fall of Rome</option>
+                                
+                                    <option value="Trigger, Bruce G.">Trigger, Bruce G.</option>
+                                
+                                    <option value="Understanding early civilizations: a comparative study">Understanding early civilizations: a comparative study</option>
+                                
+                                    <option value="Parpola, Asko">Parpola, Asko</option>
+                                
+                                    <option value="History of ancient and early medieval India: from the stone age to the 12th century ">History of ancient and early medieval India: from the stone age to the 12th century </option>
+                                
+                                    <option value="The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions.">The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions.</option>
+                                
+                                    <option value="Singh, Upinder">Singh, Upinder</option>
+                                
+                                    <option value="History of ancient and early medieval India: from the stone age to the 12th century">History of ancient and early medieval India: from the stone age to the 12th century</option>
+                                
+                                    <option value="V N Prabhakar(I)">V N Prabhakar(I)</option>
+                                
+                                    <option value="Agrawal, D. P">Agrawal, D. P</option>
+                                
+                                    <option value="Indus civilization: an interdisciplinary perspective">Indus civilization: an interdisciplinary perspective</option>
+                                
+                                    <option value="Agrawal, D. P & Kharakwal, J. S">Agrawal, D. P & Kharakwal, J. S</option>
+                                
+                                    <option value="South Asian prehistory: a multidisciplinary study">South Asian prehistory: a multidisciplinary study</option>
+                                
+                                    <option value="Lal, B. B.">Lal, B. B.</option>
+                                
+                                    <option value="Sarasvati flows on: the continuity of Indian culture">Sarasvati flows on: the continuity of Indian culture</option>
+                                
+                                    <option value="Miller, H.M.L.">Miller, H.M.L.</option>
+                                
+                                    <option value="Archaeological approaches to technology">Archaeological approaches to technology</option>
+                                
+                                    <option value="Morley, Iain & Renfrew, Colin">Morley, Iain & Renfrew, Colin</option>
+                                
+                                    <option value="Archaeology of measurement: comprehending heaven, earth and time in ancient societies">Archaeology of measurement: comprehending heaven, earth and time in ancient societies</option>
+                                
+                                    <option value="Deciphering the indus script">Deciphering the indus script</option>
+                                
+                                    <option value="Possehl, G.L.">Possehl, G.L.</option>
+                                
+                                    <option value="Ancient cities of the Indus">Ancient cities of the Indus</option>
+                                
+                                    <option value="Nishaant Choksi(I)">Nishaant Choksi(I)</option>
+                                
+                                    <option value="Ahearn, Laura M">Ahearn, Laura M</option>
+                                
+                                    <option value="Living language: an introduction to linguistic anthropology 2nd ed.">Living language: an introduction to linguistic anthropology 2nd ed.</option>
+                                
+                                    <option value="Akmajian, Adrian, Farmer, Ann K, Demers, Richard A">Akmajian, Adrian, Farmer, Ann K, Demers, Richard A</option>
+                                
+                                    <option value="Linguistics : an introduction to language and communication 5th ed">Linguistics : an introduction to language and communication 5th ed</option>
+                                
+                                    <option value="Ungerer, Friedrich & Schmid, Hans-Jorg">Ungerer, Friedrich & Schmid, Hans-Jorg</option>
+                                
+                                    <option value="Nuno Guimaraes(I)">Nuno Guimaraes(I)</option>
+                                
+                                    <option value="Floridi , Luciano">Floridi , Luciano</option>
+                                
+                                    <option value="Cambridge handbook of information and computer ethics">Cambridge handbook of information and computer ethics</option>
+                                
+                                    <option value="Baudrillard, Jean">Baudrillard, Jean</option>
+                                
+                                    <option value="Simulacra and Simulation">Simulacra and Simulation</option>
+                                
+                                    <option value="Turkle, Sherry">Turkle, Sherry</option>
+                                
+                                    <option value="The Second Self: Computers and the Human Spirit">The Second Self: Computers and the Human Spirit</option>
+                                
+                                    <option value="Zuboff, Shoshana">Zuboff, Shoshana</option>
+                                
+                                    <option value="Age of Surveillance Capitalism: the fight for a human future at the new frontier of power">Age of Surveillance Capitalism: the fight for a human future at the new frontier of power</option>
+                                
+                                    <option value="Rosa Maria Perez(I)">Rosa Maria Perez(I)</option>
+                                
+                                    <option value="Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]">Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]</option>
+                                
+                                    <option value="Transdisciplinary ethnography in India: women in the field">Transdisciplinary ethnography in India: women in the field</option>
+                                
+                                    <option value="Smith, Linda Tuhiwai">Smith, Linda Tuhiwai</option>
+                                
+                                    <option value="Decolonizing methodologies: research and indigenous people">Decolonizing methodologies: research and indigenous people</option>
+                                
+                                    <option value="Williams, Bianca C">Williams, Bianca C</option>
+                                
+                                    <option value="Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism">Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism</option>
+                                
+                                    <option value="Angus McBlane(I)">Angus McBlane(I)</option>
+                                
+                                    <option value="Braidotti, Rosi">Braidotti, Rosi</option>
+                                
+                                    <option value="Posthuman">Posthuman</option>
+                                
+                                    <option value="Davies, Tony">Davies, Tony</option>
+                                
+                                    <option value="Humanism 2nd ed.">Humanism 2nd ed.</option>
+                                
+                                    <option value="Derrida, Jacques">Derrida, Jacques</option>
+                                
+                                    <option value="Animal that therefore I am">Animal that therefore I am</option>
+                                
+                                    <option value="Foucault, Michel">Foucault, Michel</option>
+                                
+                                    <option value="Order of things : an archaeology of the human sciences 2nd ed.">Order of things : an archaeology of the human sciences 2nd ed.</option>
+                                
+                                    <option value="Haraway, Donna J">Haraway, Donna J</option>
+                                
+                                    <option value="When species meet">When species meet</option>
+                                
+                                    <option value="Kristeva, Julia">Kristeva, Julia</option>
+                                
+                                    <option value="Powers of horror: an essay on abjection">Powers of horror: an essay on abjection</option>
+                                
+                                    <option value="Wolfe, Cary">Wolfe, Cary</option>
+                                
+                                    <option value="What is posthumanism?">What is posthumanism?</option>
+                                
+                                    <option value="Madhumita Sengupta(I)">Madhumita Sengupta(I)</option>
+                                
+                                    <option value="Thapar, Romila">Thapar, Romila</option>
+                                
+                                    <option value="Somanatha: the many voices of a history">Somanatha: the many voices of a history</option>
+                                
+                                    <option value="White, Hayden">White, Hayden</option>
+                                
+                                    <option value="Content of the form: narrative discourse and historical representation">Content of the form: narrative discourse and historical representation</option>
+                                
+                                    <option value="Chatterjee, Partha">Chatterjee, Partha</option>
+                                
+                                    <option value="Nation and its fragments: colonial and postcolonial histories">Nation and its fragments: colonial and postcolonial histories</option>
+                                
+                                    <option value="Scott,James C">Scott,James C</option>
+                                
+                                    <option value="Weapons of the weak everyday forms of peasant resistance">Weapons of the weak everyday forms of peasant resistance</option>
+                                
+                                    <option value="Loomba, Ania">Loomba, Ania</option>
+                                
+                                    <option value="Colonialism postcolonialism, 2nd ed">Colonialism postcolonialism, 2nd ed</option>
+                                
+                                    <option value="Said, Edward W">Said, Edward W</option>
+                                
+                                    <option value="Orientalism: western perceptions of the orient">Orientalism: western perceptions of the orient</option>
+                                
+                                    <option value="Ambika Aiyadurai">Ambika Aiyadurai</option>
+                                
+                                    <option value="Urry, John">Urry, John</option>
+                                
+                                    <option value="Tourist gaze 3.0">Tourist gaze 3.0</option>
+                                
+                                    <option value="MacCannell, Dean ">MacCannell, Dean </option>
+                                
+                                    <option value="Tourist: a new theory of the leisure class, with a new introduction">Tourist: a new theory of the leisure class, with a new introduction</option>
+                                
+                                    <option value="Ambika Aiyadurai(I)">Ambika Aiyadurai(I)</option>
+                                
+                                    <option value="Sainath, P">Sainath, P</option>
+                                
+                                    <option value="Everybody loves a good drought">Everybody loves a good drought</option>
+                                
+                                    <option value="Aiyadurai, Ambika">Aiyadurai, Ambika</option>
+                                
+                                    <option value="Tigers are our brothers: anthropology of wildlife conservation in Northeast India">Tigers are our brothers: anthropology of wildlife conservation in Northeast India</option>
+                                
+                                    <option value="Gadgil, Madhav, Guha, Ramachandra">Gadgil, Madhav, Guha, Ramachandra</option>
+                                
+                                    <option value="This fissured land">This fissured land</option>
+                                
+                                    <option value="Sharma, Mukul">Sharma, Mukul</option>
+                                
+                                    <option value="Caste and nature :Dalits and Indian environmental politics">Caste and nature :Dalits and Indian environmental politics</option>
+                                
+                                    <option value="Tucker, Richard P">Tucker, Richard P</option>
+                                
+                                    <option value="Forest history of India">Forest history of India</option>
+                                
+                                    <option value="Guha, Ramachandra and Alier, Joan Martínez">Guha, Ramachandra and Alier, Joan Martínez</option>
+                                
+                                    <option value="Varieties of environmentalism: essays north and south">Varieties of environmentalism: essays north and south</option>
+                                
+                                    <option value="Cederlöf, Gunnel and Sivaramakrishnan, K.">Cederlöf, Gunnel and Sivaramakrishnan, K.</option>
+                                
+                                    <option value="Ecological nationalisms: nature, livelihoods, and identities in south Asia">Ecological nationalisms: nature, livelihoods, and identities in south Asia</option>
+                                
+                                    <option value="Arka Chattopadhyay">Arka Chattopadhyay</option>
+                                
+                                    <option value="Aflalo, Agnes">Aflalo, Agnes</option>
+                                
+                                    <option value="Failed assassination of psychoanalysis">Failed assassination of psychoanalysis</option>
+                                
+                                    <option value="Ansermet, Francois">Ansermet, Francois</option>
+                                
+                                    <option value="Biology of freedom">Biology of freedom</option>
+                                
+                                    <option value="Burke, Michael, Troscianko Emily T">Burke, Michael, Troscianko Emily T</option>
+                                
+                                    <option value="Cognitive literary science: dialogues between literature and cognition">Cognitive literary science: dialogues between literature and cognition</option>
+                                
+                                    <option value="Danta, Chris, Groth, Helen">Danta, Chris, Groth, Helen</option>
+                                
+                                    <option value="Mindful aesthetics: literature and the science of mind">Mindful aesthetics: literature and the science of mind</option>
+                                
+                                    <option value="Dennett, Daniel Clement">Dennett, Daniel Clement</option>
+                                
+                                    <option value="Content and consciousness">Content and consciousness</option>
+                                
+                                    <option value="Hulle, Dirk Van">Hulle, Dirk Van</option>
+                                
+                                    <option value="Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond">Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond</option>
+                                
+                                    <option value="Lakoff, George, Johnson, Mark">Lakoff, George, Johnson, Mark</option>
+                                
+                                    <option value="Metaphors we live by">Metaphors we live by</option>
+                                
+                                    <option value="Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson">Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson</option>
+                                
+                                    <option value="Laurent, Eric">Laurent, Eric</option>
+                                
+                                    <option value="Lost in cognition: psychoanalysis and the cognitive sciences">Lost in cognition: psychoanalysis and the cognitive sciences</option>
+                                
+                                    <option value="Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian">Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian</option>
+                                
+                                    <option value="What should we do with our brain?">What should we do with our brain?</option>
+                                
+                                    <option value="Malabou, Catherine, Shread, Carolyn, Crockett, Clayton">Malabou, Catherine, Shread, Carolyn, Crockett, Clayton</option>
+                                
+                                    <option value="Plasticity at the dusk of writing: dialectic destruction deconstruction">Plasticity at the dusk of writing: dialectic destruction deconstruction</option>
+                                
+                                    <option value="Malabou, Catherine, Miller, Steven">Malabou, Catherine, Miller, Steven</option>
+                                
+                                    <option value="New wounded: from neurosis to brain damage">New wounded: from neurosis to brain damage</option>
+                                
+                                    <option value="Ontology of the accident: an essay on destructive plasticity">Ontology of the accident: an essay on destructive plasticity</option>
+                                
+                                    <option value="Johnston, Adrian, Malabou, Catherine">Johnston, Adrian, Malabou, Catherine</option>
+                                
+                                    <option value="Self and emotional life: philosophy psychoanalysis and neuroscience">Self and emotional life: philosophy psychoanalysis and neuroscience</option>
+                                
+                                    <option value="Menary, Richard">Menary, Richard</option>
+                                
+                                    <option value="Extended mind">Extended mind</option>
+                                
+                                    <option value="Misra, Pushpa">Misra, Pushpa</option>
+                                
+                                    <option value="Scientific status of psychoanalysis: evidence and confirmation">Scientific status of psychoanalysis: evidence and confirmation</option>
+                                
+                                    <option value="Varela, Francisco J, Thompson, Evan">Varela, Francisco J, Thompson, Evan</option>
+                                
+                                    <option value="Embodied mind : cognitive science and human experience">Embodied mind : cognitive science and human experience</option>
+                                
+                                    <option value="Deepak Singhania">Deepak Singhania</option>
+                                
+                                    <option value="Todaro, Michael P, Smith, Stephen C">Todaro, Michael P, Smith, Stephen C</option>
+                                
+                                    <option value="Economic development 8th ed.">Economic development 8th ed.</option>
+                                
+                                    <option value="Economic development 13th ed.">Economic development 13th ed.</option>
+                                
+                                    <option value="Janvry, Alain de and  Sadoulet, Elisabeth">Janvry, Alain de and  Sadoulet, Elisabeth</option>
+                                
+                                    <option value="Development economics: theory and practice">Development economics: theory and practice</option>
+                                
+                                    <option value="Ray, Debraj">Ray, Debraj</option>
+                                
+                                    <option value="Development economics: theory and practice 2nd ed.">Development economics: theory and practice 2nd ed.</option>
+                                
+                                    <option value="Banerjee,Abhijit V. , Duflo, Esther">Banerjee,Abhijit V. , Duflo, Esther</option>
+                                
+                                    <option value="Good economics for hard times: better answers to our biggest problems">Good economics for hard times: better answers to our biggest problems</option>
+                                
+                                    <option value="Deepak Singhania(I)">Deepak Singhania(I)</option>
+                                
+                                    <option value="Agresti, Alan">Agresti, Alan</option>
+                                
+                                    <option value="Statistical methods for the social sciences">Statistical methods for the social sciences</option>
+                                
+                                    <option value="Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp">Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp</option>
+                                
+                                    <option value="Statistics using stata: an integrative approach 2nd ed.">Statistics using stata: an integrative approach 2nd ed.</option>
+                                
+                                    <option value="Hanneman, Robert, Kposowa, Augustine J">Hanneman, Robert, Kposowa, Augustine J</option>
+                                
+                                    <option value="Basic statistics for social research">Basic statistics for social research</option>
+                                
+                                    <option value="Babbie, Earl R">Babbie, Earl R</option>
+                                
+                                    <option value="Practice of social research, 13th ed.">Practice of social research, 13th ed.</option>
+                                
+                                    <option value="Alok Kumar Kanungo">Alok Kumar Kanungo</option>
+                                
+                                    <option value="Brown, Percy">Brown, Percy</option>
+                                
+                                    <option value="Indian architecture: buddhist and hindu periods">Indian architecture: buddhist and hindu periods</option>
+                                
+                                    <option value="Gupta, S.P">Gupta, S.P</option>
+                                
+                                    <option value="Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan">Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan</option>
+                                
+                                    <option value="Huntington, Susan L, J. Huntington">Huntington, Susan L, J. Huntington</option>
+                                
+                                    <option value="Art of ancient India: Buddhist, Hindu, Jain">Art of ancient India: Buddhist, Hindu, Jain</option>
+                                
+                                    <option value="Spink, Walter M">Spink, Walter M</option>
+                                
+                                    <option value="Ajanta: history and development, vol. I: the end of the golden age">Ajanta: history and development, vol. I: the end of the golden age</option>
+                                
+                                    <option value="Ajanta: history and development, volume 2 arguments about Ajanta">Ajanta: history and development, volume 2 arguments about Ajanta</option>
+                                
+                                    <option value="Ajanta: history and development, volume 3 the arrival of the uninvited">Ajanta: history and development, volume 3 the arrival of the uninvited</option>
+                                
+                                    <option value="Ajanta: history and development, vol. IV: painting, sculpture, architecture year">Ajanta: history and development, vol. IV: painting, sculpture, architecture year</option>
+                                
+                                    <option value="Ajanta: history and development, vol. V: cave by cave">Ajanta: history and development, vol. V: cave by cave</option>
+                                
+                                    <option value="Penguin History of Early India: from the origins to AD 1300">Penguin History of Early India: from the origins to AD 1300</option>
+                                
+                                    <option value="Arka Chattopadhyay(I)">Arka Chattopadhyay(I)</option>
+                                
+                                    <option value="Wolf, Virginia">Wolf, Virginia</option>
+                                
+                                    <option value="The Mark on the Wall">The Mark on the Wall</option>
+                                
+                                    <option value="Borges, Jorge Luis">Borges, Jorge Luis</option>
+                                
+                                    <option value="The Book of Sand">The Book of Sand</option>
+                                
+                                    <option value="Chughtai, Ishmat">Chughtai, Ishmat</option>
+                                
+                                    <option value="The Quilt">The Quilt</option>
+                                
+                                    <option value="Saadat Hasan Manto">Saadat Hasan Manto</option>
+                                
+                                    <option value="Dog of Titwal">Dog of Titwal</option>
+                                
+                                    <option value="Toba Tek Singh">Toba Tek Singh</option>
+                                
+                                    <option value="Thiong’o, Ngugi Wa">Thiong’o, Ngugi Wa</option>
+                                
+                                    <option value="The Upright Revolution or Why Humans Walk Upright">The Upright Revolution or Why Humans Walk Upright</option>
+                                
+                                    <option value="Ananthamurthy, U.R.">Ananthamurthy, U.R.</option>
+                                
+                                    <option value="Towards the Concept of Nationhood: Languages and Literatures in India">Towards the Concept of Nationhood: Languages and Literatures in India</option>
+                                
+                                    <option value="Barthes, Roland ">Barthes, Roland </option>
+                                
+                                    <option value="The Death of the Author ">The Death of the Author </option>
+                                
+                                    <option value="Belsey, Catherine ">Belsey, Catherine </option>
+                                
+                                    <option value="Critical Practice (Selections) ">Critical Practice (Selections) </option>
+                                
+                                    <option value="Chaudhari,  Maitrayee">Chaudhari,  Maitrayee</option>
+                                
+                                    <option value="Feminism in India: The Tale and Its Telling ">Feminism in India: The Tale and Its Telling </option>
+                                
+                                    <option value="Crenshaw, Kimberley">Crenshaw, Kimberley</option>
+                                
+                                    <option value="Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics">Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics</option>
+                                
+                                    <option value="Culler Jonathan">Culler Jonathan</option>
+                                
+                                    <option value="Literary Theory: A Very Short Introduction">Literary Theory: A Very Short Introduction</option>
+                                
+                                    <option value="Structure, Sign and Play in the Discourse of the Human Sciences ">Structure, Sign and Play in the Discourse of the Human Sciences </option>
+                                
+                                    <option value="Writing and Difference (Selections) ">Writing and Difference (Selections) </option>
+                                
+                                    <option value="Michel, Foucault">Michel, Foucault</option>
+                                
+                                    <option value="What is an Author?">What is an Author?</option>
+                                
+                                    <option value="Horkheimer, Max">Horkheimer, Max</option>
+                                
+                                    <option value="Traditional and Critical Theory">Traditional and Critical Theory</option>
+                                
+                                    <option value="Kothari, Rita">Kothari, Rita</option>
+                                
+                                    <option value="Translating India (Selections) ">Translating India (Selections) </option>
+                                
+                                    <option value="Lacan, Jacques">Lacan, Jacques</option>
+                                
+                                    <option value="Lituraterre">Lituraterre</option>
+                                
+                                    <option value="Limbale, Sharankumar">Limbale, Sharankumar</option>
+                                
+                                    <option value="Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) ">Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) </option>
+                                
+                                    <option value="Macherey, Pierre">Macherey, Pierre</option>
+                                
+                                    <option value="A Theory of Literary Production (Selections) ">A Theory of Literary Production (Selections) </option>
+                                
+                                    <option value="Mbembe, Achille">Mbembe, Achille</option>
+                                
+                                    <option value="Necropolitics">Necropolitics</option>
+                                
+                                    <option value="Moyn, Samuel">Moyn, Samuel</option>
+                                
+                                    <option value="On the Non-Globalization of Ideas ">On the Non-Globalization of Ideas </option>
+                                
+                                    <option value="Reed Jr., Aldoph">Reed Jr., Aldoph</option>
+                                
+                                    <option value="Marx, Race, and Neoliberalism ">Marx, Race, and Neoliberalism </option>
+                                
+                                    <option value="Spivak, Gayatri">Spivak, Gayatri</option>
+                                
+                                    <option value="Can the Subaltern Speak? (Selections) ">Can the Subaltern Speak? (Selections) </option>
+                                
+                                    <option value="Tagore, Rabindranath">Tagore, Rabindranath</option>
+                                
+                                    <option value="Three Essays from Literature">Three Essays from Literature</option>
+                                
+                                    <option value="Culler, Jonathan">Culler, Jonathan</option>
+                                
+                                    <option value="Literary theory: a very short introduction, 2nd ed.">Literary theory: a very short introduction, 2nd ed.</option>
+                                
+                                    <option value="Aashish Xaxa(I)">Aashish Xaxa(I)</option>
+                                
+                                    <option value="Cowen, M. P, Shenton, R. W">Cowen, M. P, Shenton, R. W</option>
+                                
+                                    <option value="Doctrines of development">Doctrines of development</option>
+                                
+                                    <option value="Arturo Escobar by Escobar, Arturo">Arturo Escobar by Escobar, Arturo</option>
+                                
+                                    <option value="Encountering development : the making and unmaking of the third world">Encountering development : the making and unmaking of the third world</option>
+                                
+                                    <option value="Desai, Vandana, Potter, Robert B">Desai, Vandana, Potter, Robert B</option>
+                                
+                                    <option value="Companion to development studies 3rd ed.">Companion to development studies 3rd ed.</option>
+                                
+                                    <option value="Kothari, Uma">Kothari, Uma</option>
+                                
+                                    <option value="Radical history of development studies: individuals, institutions and ideologies">Radical history of development studies: individuals, institutions and ideologies</option>
+                                
+                                    <option value="Rodney, Walter">Rodney, Walter</option>
+                                
+                                    <option value="How Europe underdeveloped Africa">How Europe underdeveloped Africa</option>
+                                
+                                    <option value="Frank, Andre Gunder">Frank, Andre Gunder</option>
+                                
+                                    <option value="Reorient: global economy in the Asian age">Reorient: global economy in the Asian age</option>
+                                
+                                    <option value="Aashish Xaxa">Aashish Xaxa</option>
+                                
+                                    <option value="Mamdani, Mahmood">Mamdani, Mahmood</option>
+                                
+                                    <option value="Neither settler nor native: the making and unmaking of permanent minorities">Neither settler nor native: the making and unmaking of permanent minorities</option>
+                                
+                                    <option value="Xaxa, Virginius">Xaxa, Virginius</option>
+                                
+                                    <option value="State, society, and tribes: issues in post-colonial India">State, society, and tribes: issues in post-colonial India</option>
+                                
+                                    <option value="Ambagudia, Jagannath, Xaxa, Virginius">Ambagudia, Jagannath, Xaxa, Virginius</option>
+                                
+                                    <option value="Handbook of tribal politics in India">Handbook of tribal politics in India</option>
+                                
+                                    <option value="Munda, Ram Dayal, Mullick, S. Bosu">Munda, Ram Dayal, Mullick, S. Bosu</option>
+                                
+                                    <option value="Jharkhand movement: indigenous peoples' struggle for autonomy in India">Jharkhand movement: indigenous peoples' struggle for autonomy in India</option>
+                                
+                                    <option value="Choksi, Nishaant">Choksi, Nishaant</option>
+                                
+                                    <option value="Graphic politics in eastern India: script and the quest for autonomy">Graphic politics in eastern India: script and the quest for autonomy</option>
+                                
+                                    <option value="Jooyoung Kim">Jooyoung Kim</option>
+                                
+                                    <option value="Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. ">Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. </option>
+                                
+                                    <option value="Writing successful science proposals">Writing successful science proposals</option>
+                                
+                                    <option value="Atkins, Ros ">Atkins, Ros </option>
+                                
+                                    <option value="Art of explanation: how to communicate with clarity and confidence">Art of explanation: how to communicate with clarity and confidence</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "red", "font": {"color": "white"}, "id": "Nishaant Choksi ", "label": "Nishaant Choksi ", "shape": "dot", "title": "Nishaant Choksi \nHS650: Critical Perspectives in Anthropology"}, {"color": "green", "font": {"color": "white"}, "id": "Rosaldo, Renato", "label": "Rosaldo, Renato", "shape": "dot", "title": "Rosaldo, Renato"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Culture and truth: the remaking of social analysis: with a new introduction", "label": "Culture and truth: the remaking of social analysis: with a new introduction", "shape": "dot", "title": "Culture and truth: the remaking of social analysis: with a new introduction"}, {"color": "green", "font": {"color": "white"}, "id": "Podolefsky, Aron and Brown, Peter J.", "label": "Podolefsky, Aron and Brown, Peter J.", "shape": "dot", "title": "Podolefsky, Aron and Brown, Peter J."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Applying Anthropology:An Introductory Reader", "label": "Applying Anthropology:An Introductory Reader", "shape": "dot", "title": "Applying Anthropology:An Introductory Reader"}, {"color": "green", "font": {"color": "white"}, "id": "Levi-Strauss, Claude", "label": "Levi-Strauss, Claude", "shape": "dot", "title": "Levi-Strauss, Claude"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Savage mind", "label": "Savage mind", "shape": "dot", "title": "Savage mind"}, {"color": "green", "font": {"color": "white"}, "id": "Singh, Bhrigupati", "label": "Singh, Bhrigupati", "shape": "dot", "title": "Singh, Bhrigupati"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Poverty and the quest for life: spiritual and material striving in rural India", "label": "Poverty and the quest for life: spiritual and material striving in rural India", "shape": "dot", "title": "Poverty and the quest for life: spiritual and material striving in rural India"}, {"color": "green", "font": {"color": "white"}, "id": "Uberoi, Patrica", "label": "Uberoi, Patrica", "shape": "dot", "title": "Uberoi, Patrica"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Anthropology in the east: the founders of Indian sociology and anthropology", "label": "Anthropology in the east: the founders of Indian sociology and anthropology", "shape": "dot", "title": "Anthropology in the east: the founders of Indian sociology and anthropology"}, {"color": "green", "font": {"color": "white"}, "id": "B\u00f6ck, Monika and Rao, Aparna", "label": "B\u00f6ck, Monika and Rao, Aparna", "shape": "dot", "title": "B\u00f6ck, Monika and Rao, Aparna"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Culture, creation, and procreation: concepts of kinship in South Asian practice", "label": "Culture, creation, and procreation: concepts of kinship in South Asian practice", "shape": "dot", "title": "Culture, creation, and procreation: concepts of kinship in South Asian practice"}, {"color": "green", "font": {"color": "white"}, "id": "Sur, Malini", "label": "Sur, Malini", "shape": "dot", "title": "Sur, Malini"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border", "label": "Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border", "shape": "dot", "title": "Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border"}, {"color": "green", "font": {"color": "white"}, "id": "Graeber, David ", "label": "Graeber, David ", "shape": "dot", "title": "Graeber, David "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Toward an anthropological theory of value: the false coin of our own dreams", "label": "Toward an anthropological theory of value: the false coin of our own dreams", "shape": "dot", "title": "Toward an anthropological theory of value: the false coin of our own dreams"}, {"color": "green", "font": {"color": "white"}, "id": "Lazar, Sian", "label": "Lazar, Sian", "shape": "dot", "title": "Lazar, Sian"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Anthropology of citizenship: a reader", "label": "Anthropology of citizenship: a reader", "shape": "dot", "title": "Anthropology of citizenship: a reader"}, {"color": "green", "font": {"color": "white"}, "id": "Uddin, Nasir", "label": "Uddin, Nasir", "shape": "dot", "title": "Uddin, Nasir"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Rohingya: an ethnography of subhuman life ", "label": "Rohingya: an ethnography of subhuman life ", "shape": "dot", "title": "Rohingya: an ethnography of subhuman life "}, {"color": "green", "font": {"color": "white"}, "id": "Akmajian", "label": "Akmajian", "shape": "dot", "title": "Akmajian"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Linguistics: an introduction to language and communication, 5th ed.", "label": "Linguistics: an introduction to language and communication, 5th ed.", "shape": "dot", "title": "Linguistics: an introduction to language and communication, 5th ed."}, {"color": "green", "font": {"color": "white"}, "id": "Ahearn, Laura M. ", "label": "Ahearn, Laura M. ", "shape": "dot", "title": "Ahearn, Laura M. "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Living language: an introduction to linguistic anthropology ", "label": "Living language: an introduction to linguistic anthropology ", "shape": "dot", "title": "Living language: an introduction to linguistic anthropology "}, {"color": "green", "font": {"color": "white"}, "id": "Ungerer, Friedrich ", "label": "Ungerer, Friedrich ", "shape": "dot", "title": "Ungerer, Friedrich "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Introduction to cognitive linguistics", "label": "Introduction to cognitive linguistics", "shape": "dot", "title": "Introduction to cognitive linguistics"}, {"color": "green", "font": {"color": "white"}, "id": "Kramer, Seth", "label": "Kramer, Seth", "shape": "dot", "title": "Kramer, Seth"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Linguists", "label": "Linguists", "shape": "dot", "title": "Linguists"}, {"color": "green", "font": {"color": "white"}, "id": "Milroy, Lesley", "label": "Milroy, Lesley", "shape": "dot", "title": "Milroy, Lesley"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Sociolinguistics: method and interpretation", "label": "Sociolinguistics: method and interpretation", "shape": "dot", "title": "Sociolinguistics: method and interpretation"}, {"color": "red", "font": {"color": "white"}, "id": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "label": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "shape": "dot", "title": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV\nHS 201 (World Civilizations and Cultures)"}, {"color": "green", "font": {"color": "white"}, "id": "Haywood, John", "label": "Haywood, John", "shape": "dot", "title": "Haywood, John"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Penguin historical atlas of the vikings", "label": "Penguin historical atlas of the vikings", "shape": "dot", "title": "Penguin historical atlas of the vikings"}, {"color": "green", "font": {"color": "white"}, "id": "Maisels, Charles Keith", "label": "Maisels, Charles Keith", "shape": "dot", "title": "Maisels, Charles Keith"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China", "label": "Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China", "shape": "dot", "title": "Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China"}, {"color": "green", "font": {"color": "white"}, "id": "Chandra, Satish", "label": "Chandra, Satish", "shape": "dot", "title": "Chandra, Satish"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat", "label": "Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat", "shape": "dot", "title": "Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)", "label": "Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)", "shape": "dot", "title": "Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)"}, {"color": "green", "font": {"color": "white"}, "id": "Shelach-Lavi, Gideon", "label": "Shelach-Lavi, Gideon", "shape": "dot", "title": "Shelach-Lavi, Gideon"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Archaeology of early China: from prehistory to the Han dynasty", "label": "Archaeology of early China: from prehistory to the Han dynasty", "shape": "dot", "title": "Archaeology of early China: from prehistory to the Han dynasty"}, {"color": "green", "font": {"color": "white"}, "id": "Bandyopadhyay, Sekhar", "label": "Bandyopadhyay, Sekhar", "shape": "dot", "title": "Bandyopadhyay, Sekhar"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "From Plassey to partition: a history of modern India", "label": "From Plassey to partition: a history of modern India", "shape": "dot", "title": "From Plassey to partition: a history of modern India"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "From plassey to partition and after: a history of modern India, 2nd ed.", "label": "From plassey to partition and after: a history of modern India, 2nd ed.", "shape": "dot", "title": "From plassey to partition and after: a history of modern India, 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Bauer, Susan Wise", "label": "Bauer, Susan Wise", "shape": "dot", "title": "Bauer, Susan Wise"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "History of the ancient world: from the earliest accounts to the fall of Rome", "label": "History of the ancient world: from the earliest accounts to the fall of Rome", "shape": "dot", "title": "History of the ancient world: from the earliest accounts to the fall of Rome"}, {"color": "green", "font": {"color": "white"}, "id": "Trigger, Bruce G.", "label": "Trigger, Bruce G.", "shape": "dot", "title": "Trigger, Bruce G."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Understanding early civilizations: a comparative study", "label": "Understanding early civilizations: a comparative study", "shape": "dot", "title": "Understanding early civilizations: a comparative study"}, {"color": "green", "font": {"color": "white"}, "id": "Parpola, Asko", "label": "Parpola, Asko", "shape": "dot", "title": "Parpola, Asko"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "History of ancient and early medieval India: from the stone age to the 12th century ", "label": "History of ancient and early medieval India: from the stone age to the 12th century ", "shape": "dot", "title": "History of ancient and early medieval India: from the stone age to the 12th century "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions.", "label": "The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions.", "shape": "dot", "title": "The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions."}, {"color": "green", "font": {"color": "white"}, "id": "Singh, Upinder", "label": "Singh, Upinder", "shape": "dot", "title": "Singh, Upinder"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "History of ancient and early medieval India: from the stone age to the 12th century", "label": "History of ancient and early medieval India: from the stone age to the 12th century", "shape": "dot", "title": "History of ancient and early medieval India: from the stone age to the 12th century"}, {"color": "red", "font": {"color": "white"}, "id": "V N Prabhakar(I)", "label": "V N Prabhakar(I)", "shape": "dot", "title": "V N Prabhakar(I)\nHS 326 (Harappan Civilization)"}, {"color": "green", "font": {"color": "white"}, "id": "Agrawal, D. P", "label": "Agrawal, D. P", "shape": "dot", "title": "Agrawal, D. P"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Indus civilization: an interdisciplinary perspective", "label": "Indus civilization: an interdisciplinary perspective", "shape": "dot", "title": "Indus civilization: an interdisciplinary perspective"}, {"color": "green", "font": {"color": "white"}, "id": "Agrawal, D. P \u0026 Kharakwal, J. S", "label": "Agrawal, D. P \u0026 Kharakwal, J. S", "shape": "dot", "title": "Agrawal, D. P \u0026 Kharakwal, J. S"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "South Asian prehistory: a multidisciplinary study", "label": "South Asian prehistory: a multidisciplinary study", "shape": "dot", "title": "South Asian prehistory: a multidisciplinary study"}, {"color": "green", "font": {"color": "white"}, "id": "Lal, B. B.", "label": "Lal, B. B.", "shape": "dot", "title": "Lal, B. B."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Sarasvati flows on: the continuity of Indian culture", "label": "Sarasvati flows on: the continuity of Indian culture", "shape": "dot", "title": "Sarasvati flows on: the continuity of Indian culture"}, {"color": "green", "font": {"color": "white"}, "id": "Miller, H.M.L.", "label": "Miller, H.M.L.", "shape": "dot", "title": "Miller, H.M.L."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Archaeological approaches to technology", "label": "Archaeological approaches to technology", "shape": "dot", "title": "Archaeological approaches to technology"}, {"color": "green", "font": {"color": "white"}, "id": "Morley, Iain \u0026 Renfrew, Colin", "label": "Morley, Iain \u0026 Renfrew, Colin", "shape": "dot", "title": "Morley, Iain \u0026 Renfrew, Colin"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Archaeology of measurement: comprehending heaven, earth and time in ancient societies", "label": "Archaeology of measurement: comprehending heaven, earth and time in ancient societies", "shape": "dot", "title": "Archaeology of measurement: comprehending heaven, earth and time in ancient societies"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Deciphering the indus script", "label": "Deciphering the indus script", "shape": "dot", "title": "Deciphering the indus script"}, {"color": "green", "font": {"color": "white"}, "id": "Possehl, G.L.", "label": "Possehl, G.L.", "shape": "dot", "title": "Possehl, G.L."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ancient cities of the Indus", "label": "Ancient cities of the Indus", "shape": "dot", "title": "Ancient cities of the Indus"}, {"color": "red", "font": {"color": "white"}, "id": "Nishaant Choksi(I)", "label": "Nishaant Choksi(I)", "shape": "dot", "title": "Nishaant Choksi(I)\nHS 421 (Introduction to Linguistics)"}, {"color": "green", "font": {"color": "white"}, "id": "Ahearn, Laura M", "label": "Ahearn, Laura M", "shape": "dot", "title": "Ahearn, Laura M"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Living language: an introduction to linguistic anthropology 2nd ed.", "label": "Living language: an introduction to linguistic anthropology 2nd ed.", "shape": "dot", "title": "Living language: an introduction to linguistic anthropology 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Akmajian, Adrian, Farmer, Ann K, Demers, Richard A", "label": "Akmajian, Adrian, Farmer, Ann K, Demers, Richard A", "shape": "dot", "title": "Akmajian, Adrian, Farmer, Ann K, Demers, Richard A"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Linguistics : an introduction to language and communication 5th ed", "label": "Linguistics : an introduction to language and communication 5th ed", "shape": "dot", "title": "Linguistics : an introduction to language and communication 5th ed"}, {"color": "green", "font": {"color": "white"}, "id": "Ungerer, Friedrich \u0026 Schmid, Hans-Jorg", "label": "Ungerer, Friedrich \u0026 Schmid, Hans-Jorg", "shape": "dot", "title": "Ungerer, Friedrich \u0026 Schmid, Hans-Jorg"}, {"color": "red", "font": {"color": "white"}, "id": "Nuno Guimaraes(I)", "label": "Nuno Guimaraes(I)", "shape": "dot", "title": "Nuno Guimaraes(I)\nHS 491-VIII (Special Topics in HSS: Challenges in the Digital Society)"}, {"color": "green", "font": {"color": "white"}, "id": "Floridi , Luciano", "label": "Floridi , Luciano", "shape": "dot", "title": "Floridi , Luciano"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Cambridge handbook of information and computer ethics", "label": "Cambridge handbook of information and computer ethics", "shape": "dot", "title": "Cambridge handbook of information and computer ethics"}, {"color": "green", "font": {"color": "white"}, "id": "Baudrillard, Jean", "label": "Baudrillard, Jean", "shape": "dot", "title": "Baudrillard, Jean"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Simulacra and Simulation", "label": "Simulacra and Simulation", "shape": "dot", "title": "Simulacra and Simulation"}, {"color": "green", "font": {"color": "white"}, "id": "Turkle, Sherry", "label": "Turkle, Sherry", "shape": "dot", "title": "Turkle, Sherry"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Second Self: Computers and the Human Spirit", "label": "The Second Self: Computers and the Human Spirit", "shape": "dot", "title": "The Second Self: Computers and the Human Spirit"}, {"color": "green", "font": {"color": "white"}, "id": "Zuboff, Shoshana", "label": "Zuboff, Shoshana", "shape": "dot", "title": "Zuboff, Shoshana"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Age of Surveillance Capitalism: the fight for a human future at the new frontier of power", "label": "Age of Surveillance Capitalism: the fight for a human future at the new frontier of power", "shape": "dot", "title": "Age of Surveillance Capitalism: the fight for a human future at the new frontier of power"}, {"color": "red", "font": {"color": "white"}, "id": "Rosa Maria Perez(I)", "label": "Rosa Maria Perez(I)", "shape": "dot", "title": "Rosa Maria Perez(I)\nHS 492-III (Special Topics in HSS: Anthropology in the 21st Century)"}, {"color": "green", "font": {"color": "white"}, "id": "Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]", "label": "Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]", "shape": "dot", "title": "Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Transdisciplinary ethnography in India: women in the field", "label": "Transdisciplinary ethnography in India: women in the field", "shape": "dot", "title": "Transdisciplinary ethnography in India: women in the field"}, {"color": "green", "font": {"color": "white"}, "id": "Smith, Linda Tuhiwai", "label": "Smith, Linda Tuhiwai", "shape": "dot", "title": "Smith, Linda Tuhiwai"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Decolonizing methodologies: research and indigenous people", "label": "Decolonizing methodologies: research and indigenous people", "shape": "dot", "title": "Decolonizing methodologies: research and indigenous people"}, {"color": "green", "font": {"color": "white"}, "id": "Williams, Bianca C", "label": "Williams, Bianca C", "shape": "dot", "title": "Williams, Bianca C"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism", "label": "Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism", "shape": "dot", "title": "Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism"}, {"color": "red", "font": {"color": "white"}, "id": "Angus McBlane(I)", "label": "Angus McBlane(I)", "shape": "dot", "title": "Angus McBlane(I)\nHS-507 (Humanism, Antihumanism, Posthumanism)"}, {"color": "green", "font": {"color": "white"}, "id": "Braidotti, Rosi", "label": "Braidotti, Rosi", "shape": "dot", "title": "Braidotti, Rosi"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Posthuman", "label": "Posthuman", "shape": "dot", "title": "Posthuman"}, {"color": "green", "font": {"color": "white"}, "id": "Davies, Tony", "label": "Davies, Tony", "shape": "dot", "title": "Davies, Tony"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Humanism 2nd ed.", "label": "Humanism 2nd ed.", "shape": "dot", "title": "Humanism 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Derrida, Jacques", "label": "Derrida, Jacques", "shape": "dot", "title": "Derrida, Jacques"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Animal that therefore I am", "label": "Animal that therefore I am", "shape": "dot", "title": "Animal that therefore I am"}, {"color": "green", "font": {"color": "white"}, "id": "Foucault, Michel", "label": "Foucault, Michel", "shape": "dot", "title": "Foucault, Michel"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Order of things : an archaeology of the human sciences 2nd ed.", "label": "Order of things : an archaeology of the human sciences 2nd ed.", "shape": "dot", "title": "Order of things : an archaeology of the human sciences 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Haraway, Donna J", "label": "Haraway, Donna J", "shape": "dot", "title": "Haraway, Donna J"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "When species meet", "label": "When species meet", "shape": "dot", "title": "When species meet"}, {"color": "green", "font": {"color": "white"}, "id": "Kristeva, Julia", "label": "Kristeva, Julia", "shape": "dot", "title": "Kristeva, Julia"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Powers of horror: an essay on abjection", "label": "Powers of horror: an essay on abjection", "shape": "dot", "title": "Powers of horror: an essay on abjection"}, {"color": "green", "font": {"color": "white"}, "id": "Wolfe, Cary", "label": "Wolfe, Cary", "shape": "dot", "title": "Wolfe, Cary"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "What is posthumanism?", "label": "What is posthumanism?", "shape": "dot", "title": "What is posthumanism?"}, {"color": "red", "font": {"color": "white"}, "id": "Madhumita Sengupta(I)", "label": "Madhumita Sengupta(I)", "shape": "dot", "title": "Madhumita Sengupta(I)\nHS 513 (Perspectives in History)"}, {"color": "green", "font": {"color": "white"}, "id": "Thapar, Romila", "label": "Thapar, Romila", "shape": "dot", "title": "Thapar, Romila"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Somanatha: the many voices of a history", "label": "Somanatha: the many voices of a history", "shape": "dot", "title": "Somanatha: the many voices of a history"}, {"color": "green", "font": {"color": "white"}, "id": "White, Hayden", "label": "White, Hayden", "shape": "dot", "title": "White, Hayden"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Content of the form: narrative discourse and historical representation", "label": "Content of the form: narrative discourse and historical representation", "shape": "dot", "title": "Content of the form: narrative discourse and historical representation"}, {"color": "green", "font": {"color": "white"}, "id": "Chatterjee, Partha", "label": "Chatterjee, Partha", "shape": "dot", "title": "Chatterjee, Partha"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Nation and its fragments: colonial and postcolonial histories", "label": "Nation and its fragments: colonial and postcolonial histories", "shape": "dot", "title": "Nation and its fragments: colonial and postcolonial histories"}, {"color": "green", "font": {"color": "white"}, "id": "Scott,James C", "label": "Scott,James C", "shape": "dot", "title": "Scott,James C"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Weapons of the weak everyday forms of peasant resistance", "label": "Weapons of the weak everyday forms of peasant resistance", "shape": "dot", "title": "Weapons of the weak everyday forms of peasant resistance"}, {"color": "green", "font": {"color": "white"}, "id": "Loomba, Ania", "label": "Loomba, Ania", "shape": "dot", "title": "Loomba, Ania"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Colonialism postcolonialism, 2nd ed", "label": "Colonialism postcolonialism, 2nd ed", "shape": "dot", "title": "Colonialism postcolonialism, 2nd ed"}, {"color": "green", "font": {"color": "white"}, "id": "Said, Edward W", "label": "Said, Edward W", "shape": "dot", "title": "Said, Edward W"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Orientalism: western perceptions of the orient", "label": "Orientalism: western perceptions of the orient", "shape": "dot", "title": "Orientalism: western perceptions of the orient"}, {"color": "red", "font": {"color": "white"}, "id": "Ambika Aiyadurai", "label": "Ambika Aiyadurai", "shape": "dot", "title": "Ambika Aiyadurai\nHS 514 (Sociology of Tourism)"}, {"color": "green", "font": {"color": "white"}, "id": "Urry, John", "label": "Urry, John", "shape": "dot", "title": "Urry, John"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Tourist gaze 3.0", "label": "Tourist gaze 3.0", "shape": "dot", "title": "Tourist gaze 3.0"}, {"color": "green", "font": {"color": "white"}, "id": "MacCannell, Dean ", "label": "MacCannell, Dean ", "shape": "dot", "title": "MacCannell, Dean "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Tourist: a new theory of the leisure class, with a new introduction", "label": "Tourist: a new theory of the leisure class, with a new introduction", "shape": "dot", "title": "Tourist: a new theory of the leisure class, with a new introduction"}, {"color": "red", "font": {"color": "white"}, "id": "Ambika Aiyadurai(I)", "label": "Ambika Aiyadurai(I)", "shape": "dot", "title": "Ambika Aiyadurai(I)\nHS 515 (The Politics of the Environment)"}, {"color": "green", "font": {"color": "white"}, "id": "Sainath, P", "label": "Sainath, P", "shape": "dot", "title": "Sainath, P"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Everybody loves a good drought", "label": "Everybody loves a good drought", "shape": "dot", "title": "Everybody loves a good drought"}, {"color": "green", "font": {"color": "white"}, "id": "Aiyadurai, Ambika", "label": "Aiyadurai, Ambika", "shape": "dot", "title": "Aiyadurai, Ambika"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Tigers are our brothers: anthropology of wildlife conservation in Northeast India", "label": "Tigers are our brothers: anthropology of wildlife conservation in Northeast India", "shape": "dot", "title": "Tigers are our brothers: anthropology of wildlife conservation in Northeast India"}, {"color": "green", "font": {"color": "white"}, "id": "Gadgil, Madhav, Guha, Ramachandra", "label": "Gadgil, Madhav, Guha, Ramachandra", "shape": "dot", "title": "Gadgil, Madhav, Guha, Ramachandra"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "This fissured land", "label": "This fissured land", "shape": "dot", "title": "This fissured land"}, {"color": "green", "font": {"color": "white"}, "id": "Sharma, Mukul", "label": "Sharma, Mukul", "shape": "dot", "title": "Sharma, Mukul"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Caste and nature :Dalits and Indian environmental politics", "label": "Caste and nature :Dalits and Indian environmental politics", "shape": "dot", "title": "Caste and nature :Dalits and Indian environmental politics"}, {"color": "green", "font": {"color": "white"}, "id": "Tucker, Richard P", "label": "Tucker, Richard P", "shape": "dot", "title": "Tucker, Richard P"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Forest history of India", "label": "Forest history of India", "shape": "dot", "title": "Forest history of India"}, {"color": "green", "font": {"color": "white"}, "id": "Guha, Ramachandra and Alier, Joan Mart\u00ednez", "label": "Guha, Ramachandra and Alier, Joan Mart\u00ednez", "shape": "dot", "title": "Guha, Ramachandra and Alier, Joan Mart\u00ednez"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Varieties of environmentalism: essays north and south", "label": "Varieties of environmentalism: essays north and south", "shape": "dot", "title": "Varieties of environmentalism: essays north and south"}, {"color": "green", "font": {"color": "white"}, "id": "Cederl\u00f6f, Gunnel and Sivaramakrishnan, K.", "label": "Cederl\u00f6f, Gunnel and Sivaramakrishnan, K.", "shape": "dot", "title": "Cederl\u00f6f, Gunnel and Sivaramakrishnan, K."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ecological nationalisms: nature, livelihoods, and identities in south Asia", "label": "Ecological nationalisms: nature, livelihoods, and identities in south Asia", "shape": "dot", "title": "Ecological nationalisms: nature, livelihoods, and identities in south Asia"}, {"color": "red", "font": {"color": "white"}, "id": "Arka Chattopadhyay", "label": "Arka Chattopadhyay", "shape": "dot", "title": "Arka Chattopadhyay\nHS 518 (Philosophy, Cognition and Psychoanalysis)"}, {"color": "green", "font": {"color": "white"}, "id": "Aflalo, Agnes", "label": "Aflalo, Agnes", "shape": "dot", "title": "Aflalo, Agnes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Failed assassination of psychoanalysis", "label": "Failed assassination of psychoanalysis", "shape": "dot", "title": "Failed assassination of psychoanalysis"}, {"color": "green", "font": {"color": "white"}, "id": "Ansermet, Francois", "label": "Ansermet, Francois", "shape": "dot", "title": "Ansermet, Francois"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Biology of freedom", "label": "Biology of freedom", "shape": "dot", "title": "Biology of freedom"}, {"color": "green", "font": {"color": "white"}, "id": "Burke, Michael, Troscianko Emily T", "label": "Burke, Michael, Troscianko Emily T", "shape": "dot", "title": "Burke, Michael, Troscianko Emily T"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Cognitive literary science: dialogues between literature and cognition", "label": "Cognitive literary science: dialogues between literature and cognition", "shape": "dot", "title": "Cognitive literary science: dialogues between literature and cognition"}, {"color": "green", "font": {"color": "white"}, "id": "Danta, Chris, Groth, Helen", "label": "Danta, Chris, Groth, Helen", "shape": "dot", "title": "Danta, Chris, Groth, Helen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Mindful aesthetics: literature and the science of mind", "label": "Mindful aesthetics: literature and the science of mind", "shape": "dot", "title": "Mindful aesthetics: literature and the science of mind"}, {"color": "green", "font": {"color": "white"}, "id": "Dennett, Daniel Clement", "label": "Dennett, Daniel Clement", "shape": "dot", "title": "Dennett, Daniel Clement"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Content and consciousness", "label": "Content and consciousness", "shape": "dot", "title": "Content and consciousness"}, {"color": "green", "font": {"color": "white"}, "id": "Hulle, Dirk Van", "label": "Hulle, Dirk Van", "shape": "dot", "title": "Hulle, Dirk Van"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond", "label": "Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond", "shape": "dot", "title": "Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond"}, {"color": "green", "font": {"color": "white"}, "id": "Lakoff, George, Johnson, Mark", "label": "Lakoff, George, Johnson, Mark", "shape": "dot", "title": "Lakoff, George, Johnson, Mark"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Metaphors we live by", "label": "Metaphors we live by", "shape": "dot", "title": "Metaphors we live by"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson", "label": "Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson", "shape": "dot", "title": "Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson"}, {"color": "green", "font": {"color": "white"}, "id": "Laurent, Eric", "label": "Laurent, Eric", "shape": "dot", "title": "Laurent, Eric"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Lost in cognition: psychoanalysis and the cognitive sciences", "label": "Lost in cognition: psychoanalysis and the cognitive sciences", "shape": "dot", "title": "Lost in cognition: psychoanalysis and the cognitive sciences"}, {"color": "green", "font": {"color": "white"}, "id": "Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian", "label": "Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian", "shape": "dot", "title": "Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "What should we do with our brain?", "label": "What should we do with our brain?", "shape": "dot", "title": "What should we do with our brain?"}, {"color": "green", "font": {"color": "white"}, "id": "Malabou, Catherine, Shread, Carolyn, Crockett, Clayton", "label": "Malabou, Catherine, Shread, Carolyn, Crockett, Clayton", "shape": "dot", "title": "Malabou, Catherine, Shread, Carolyn, Crockett, Clayton"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Plasticity at the dusk of writing: dialectic destruction deconstruction", "label": "Plasticity at the dusk of writing: dialectic destruction deconstruction", "shape": "dot", "title": "Plasticity at the dusk of writing: dialectic destruction deconstruction"}, {"color": "green", "font": {"color": "white"}, "id": "Malabou, Catherine, Miller, Steven", "label": "Malabou, Catherine, Miller, Steven", "shape": "dot", "title": "Malabou, Catherine, Miller, Steven"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "New wounded: from neurosis to brain damage", "label": "New wounded: from neurosis to brain damage", "shape": "dot", "title": "New wounded: from neurosis to brain damage"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ontology of the accident: an essay on destructive plasticity", "label": "Ontology of the accident: an essay on destructive plasticity", "shape": "dot", "title": "Ontology of the accident: an essay on destructive plasticity"}, {"color": "green", "font": {"color": "white"}, "id": "Johnston, Adrian, Malabou, Catherine", "label": "Johnston, Adrian, Malabou, Catherine", "shape": "dot", "title": "Johnston, Adrian, Malabou, Catherine"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Self and emotional life: philosophy psychoanalysis and neuroscience", "label": "Self and emotional life: philosophy psychoanalysis and neuroscience", "shape": "dot", "title": "Self and emotional life: philosophy psychoanalysis and neuroscience"}, {"color": "green", "font": {"color": "white"}, "id": "Menary, Richard", "label": "Menary, Richard", "shape": "dot", "title": "Menary, Richard"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Extended mind", "label": "Extended mind", "shape": "dot", "title": "Extended mind"}, {"color": "green", "font": {"color": "white"}, "id": "Misra, Pushpa", "label": "Misra, Pushpa", "shape": "dot", "title": "Misra, Pushpa"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Scientific status of psychoanalysis: evidence and confirmation", "label": "Scientific status of psychoanalysis: evidence and confirmation", "shape": "dot", "title": "Scientific status of psychoanalysis: evidence and confirmation"}, {"color": "green", "font": {"color": "white"}, "id": "Varela, Francisco J, Thompson, Evan", "label": "Varela, Francisco J, Thompson, Evan", "shape": "dot", "title": "Varela, Francisco J, Thompson, Evan"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Embodied mind : cognitive science and human experience", "label": "Embodied mind : cognitive science and human experience", "shape": "dot", "title": "Embodied mind : cognitive science and human experience"}, {"color": "red", "font": {"color": "white"}, "id": "Deepak Singhania", "label": "Deepak Singhania", "shape": "dot", "title": "Deepak Singhania\nHS 521 (Development Economics)"}, {"color": "green", "font": {"color": "white"}, "id": "Todaro, Michael P, Smith, Stephen C", "label": "Todaro, Michael P, Smith, Stephen C", "shape": "dot", "title": "Todaro, Michael P, Smith, Stephen C"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Economic development 8th ed.", "label": "Economic development 8th ed.", "shape": "dot", "title": "Economic development 8th ed."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Economic development 13th ed.", "label": "Economic development 13th ed.", "shape": "dot", "title": "Economic development 13th ed."}, {"color": "green", "font": {"color": "white"}, "id": "Janvry, Alain de and  Sadoulet, Elisabeth", "label": "Janvry, Alain de and  Sadoulet, Elisabeth", "shape": "dot", "title": "Janvry, Alain de and  Sadoulet, Elisabeth"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Development economics: theory and practice", "label": "Development economics: theory and practice", "shape": "dot", "title": "Development economics: theory and practice"}, {"color": "green", "font": {"color": "white"}, "id": "Ray, Debraj", "label": "Ray, Debraj", "shape": "dot", "title": "Ray, Debraj"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Development economics: theory and practice 2nd ed.", "label": "Development economics: theory and practice 2nd ed.", "shape": "dot", "title": "Development economics: theory and practice 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Banerjee,Abhijit V. , Duflo, Esther", "label": "Banerjee,Abhijit V. , Duflo, Esther", "shape": "dot", "title": "Banerjee,Abhijit V. , Duflo, Esther"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Good economics for hard times: better answers to our biggest problems", "label": "Good economics for hard times: better answers to our biggest problems", "shape": "dot", "title": "Good economics for hard times: better answers to our biggest problems"}, {"color": "red", "font": {"color": "white"}, "id": "Deepak Singhania(I)", "label": "Deepak Singhania(I)", "shape": "dot", "title": "Deepak Singhania(I)\nHS 523 (Quantitative Research Methods in Social Sciences)"}, {"color": "green", "font": {"color": "white"}, "id": "Agresti, Alan", "label": "Agresti, Alan", "shape": "dot", "title": "Agresti, Alan"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Statistical methods for the social sciences", "label": "Statistical methods for the social sciences", "shape": "dot", "title": "Statistical methods for the social sciences"}, {"color": "green", "font": {"color": "white"}, "id": "Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp", "label": "Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp", "shape": "dot", "title": "Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Statistics using stata: an integrative approach 2nd ed.", "label": "Statistics using stata: an integrative approach 2nd ed.", "shape": "dot", "title": "Statistics using stata: an integrative approach 2nd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Hanneman, Robert, Kposowa, Augustine J", "label": "Hanneman, Robert, Kposowa, Augustine J", "shape": "dot", "title": "Hanneman, Robert, Kposowa, Augustine J"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Basic statistics for social research", "label": "Basic statistics for social research", "shape": "dot", "title": "Basic statistics for social research"}, {"color": "green", "font": {"color": "white"}, "id": "Babbie, Earl R", "label": "Babbie, Earl R", "shape": "dot", "title": "Babbie, Earl R"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Practice of social research, 13th ed.", "label": "Practice of social research, 13th ed.", "shape": "dot", "title": "Practice of social research, 13th ed."}, {"color": "red", "font": {"color": "white"}, "id": "Alok Kumar Kanungo", "label": "Alok Kumar Kanungo", "shape": "dot", "title": "Alok Kumar Kanungo\nHS 642 (Structures and Hydrology in Ancient India)"}, {"color": "green", "font": {"color": "white"}, "id": "Brown, Percy", "label": "Brown, Percy", "shape": "dot", "title": "Brown, Percy"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Indian architecture: buddhist and hindu periods", "label": "Indian architecture: buddhist and hindu periods", "shape": "dot", "title": "Indian architecture: buddhist and hindu periods"}, {"color": "green", "font": {"color": "white"}, "id": "Gupta, S.P", "label": "Gupta, S.P", "shape": "dot", "title": "Gupta, S.P"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan", "label": "Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan", "shape": "dot", "title": "Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan"}, {"color": "green", "font": {"color": "white"}, "id": "Huntington, Susan L, J. Huntington", "label": "Huntington, Susan L, J. Huntington", "shape": "dot", "title": "Huntington, Susan L, J. Huntington"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Art of ancient India: Buddhist, Hindu, Jain", "label": "Art of ancient India: Buddhist, Hindu, Jain", "shape": "dot", "title": "Art of ancient India: Buddhist, Hindu, Jain"}, {"color": "green", "font": {"color": "white"}, "id": "Spink, Walter M", "label": "Spink, Walter M", "shape": "dot", "title": "Spink, Walter M"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ajanta: history and development, vol. I: the end of the golden age", "label": "Ajanta: history and development, vol. I: the end of the golden age", "shape": "dot", "title": "Ajanta: history and development, vol. I: the end of the golden age"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ajanta: history and development, volume 2 arguments about Ajanta", "label": "Ajanta: history and development, volume 2 arguments about Ajanta", "shape": "dot", "title": "Ajanta: history and development, volume 2 arguments about Ajanta"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ajanta: history and development, volume 3 the arrival of the uninvited", "label": "Ajanta: history and development, volume 3 the arrival of the uninvited", "shape": "dot", "title": "Ajanta: history and development, volume 3 the arrival of the uninvited"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ajanta: history and development, vol. IV: painting, sculpture, architecture year", "label": "Ajanta: history and development, vol. IV: painting, sculpture, architecture year", "shape": "dot", "title": "Ajanta: history and development, vol. IV: painting, sculpture, architecture year"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ajanta: history and development, vol. V: cave by cave", "label": "Ajanta: history and development, vol. V: cave by cave", "shape": "dot", "title": "Ajanta: history and development, vol. V: cave by cave"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Penguin History of Early India: from the origins to AD 1300", "label": "Penguin History of Early India: from the origins to AD 1300", "shape": "dot", "title": "Penguin History of Early India: from the origins to AD 1300"}, {"color": "red", "font": {"color": "white"}, "id": "Arka Chattopadhyay(I)", "label": "Arka Chattopadhyay(I)", "shape": "dot", "title": "Arka Chattopadhyay(I)\nHS 647 (Literature, Theory and Social Context)"}, {"color": "green", "font": {"color": "white"}, "id": "Wolf, Virginia", "label": "Wolf, Virginia", "shape": "dot", "title": "Wolf, Virginia"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Mark on the Wall", "label": "The Mark on the Wall", "shape": "dot", "title": "The Mark on the Wall"}, {"color": "green", "font": {"color": "white"}, "id": "Borges, Jorge Luis", "label": "Borges, Jorge Luis", "shape": "dot", "title": "Borges, Jorge Luis"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Book of Sand", "label": "The Book of Sand", "shape": "dot", "title": "The Book of Sand"}, {"color": "green", "font": {"color": "white"}, "id": "Chughtai, Ishmat", "label": "Chughtai, Ishmat", "shape": "dot", "title": "Chughtai, Ishmat"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Quilt", "label": "The Quilt", "shape": "dot", "title": "The Quilt"}, {"color": "green", "font": {"color": "white"}, "id": "Saadat Hasan Manto", "label": "Saadat Hasan Manto", "shape": "dot", "title": "Saadat Hasan Manto"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Dog of Titwal", "label": "Dog of Titwal", "shape": "dot", "title": "Dog of Titwal"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Toba Tek Singh", "label": "Toba Tek Singh", "shape": "dot", "title": "Toba Tek Singh"}, {"color": "green", "font": {"color": "white"}, "id": "Thiong\u2019o, Ngugi Wa", "label": "Thiong\u2019o, Ngugi Wa", "shape": "dot", "title": "Thiong\u2019o, Ngugi Wa"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Upright Revolution or Why Humans Walk Upright", "label": "The Upright Revolution or Why Humans Walk Upright", "shape": "dot", "title": "The Upright Revolution or Why Humans Walk Upright"}, {"color": "green", "font": {"color": "white"}, "id": "Ananthamurthy, U.R.", "label": "Ananthamurthy, U.R.", "shape": "dot", "title": "Ananthamurthy, U.R."}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Towards the Concept of Nationhood: Languages and Literatures in India", "label": "Towards the Concept of Nationhood: Languages and Literatures in India", "shape": "dot", "title": "Towards the Concept of Nationhood: Languages and Literatures in India"}, {"color": "green", "font": {"color": "white"}, "id": "Barthes, Roland ", "label": "Barthes, Roland ", "shape": "dot", "title": "Barthes, Roland "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "The Death of the Author ", "label": "The Death of the Author ", "shape": "dot", "title": "The Death of the Author "}, {"color": "green", "font": {"color": "white"}, "id": "Belsey, Catherine ", "label": "Belsey, Catherine ", "shape": "dot", "title": "Belsey, Catherine "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Critical Practice (Selections) ", "label": "Critical Practice (Selections) ", "shape": "dot", "title": "Critical Practice (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Chaudhari,  Maitrayee", "label": "Chaudhari,  Maitrayee", "shape": "dot", "title": "Chaudhari,  Maitrayee"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Feminism in India: The Tale and Its Telling ", "label": "Feminism in India: The Tale and Its Telling ", "shape": "dot", "title": "Feminism in India: The Tale and Its Telling "}, {"color": "green", "font": {"color": "white"}, "id": "Crenshaw, Kimberley", "label": "Crenshaw, Kimberley", "shape": "dot", "title": "Crenshaw, Kimberley"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics", "label": "Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics", "shape": "dot", "title": "Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics"}, {"color": "green", "font": {"color": "white"}, "id": "Culler Jonathan", "label": "Culler Jonathan", "shape": "dot", "title": "Culler Jonathan"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Literary Theory: A Very Short Introduction", "label": "Literary Theory: A Very Short Introduction", "shape": "dot", "title": "Literary Theory: A Very Short Introduction"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Structure, Sign and Play in the Discourse of the Human Sciences ", "label": "Structure, Sign and Play in the Discourse of the Human Sciences ", "shape": "dot", "title": "Structure, Sign and Play in the Discourse of the Human Sciences "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Writing and Difference (Selections) ", "label": "Writing and Difference (Selections) ", "shape": "dot", "title": "Writing and Difference (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Michel, Foucault", "label": "Michel, Foucault", "shape": "dot", "title": "Michel, Foucault"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "What is an Author?", "label": "What is an Author?", "shape": "dot", "title": "What is an Author?"}, {"color": "green", "font": {"color": "white"}, "id": "Horkheimer, Max", "label": "Horkheimer, Max", "shape": "dot", "title": "Horkheimer, Max"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Traditional and Critical Theory", "label": "Traditional and Critical Theory", "shape": "dot", "title": "Traditional and Critical Theory"}, {"color": "green", "font": {"color": "white"}, "id": "Kothari, Rita", "label": "Kothari, Rita", "shape": "dot", "title": "Kothari, Rita"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Translating India (Selections) ", "label": "Translating India (Selections) ", "shape": "dot", "title": "Translating India (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Lacan, Jacques", "label": "Lacan, Jacques", "shape": "dot", "title": "Lacan, Jacques"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Lituraterre", "label": "Lituraterre", "shape": "dot", "title": "Lituraterre"}, {"color": "green", "font": {"color": "white"}, "id": "Limbale, Sharankumar", "label": "Limbale, Sharankumar", "shape": "dot", "title": "Limbale, Sharankumar"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) ", "label": "Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) ", "shape": "dot", "title": "Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Macherey, Pierre", "label": "Macherey, Pierre", "shape": "dot", "title": "Macherey, Pierre"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "A Theory of Literary Production (Selections) ", "label": "A Theory of Literary Production (Selections) ", "shape": "dot", "title": "A Theory of Literary Production (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Mbembe, Achille", "label": "Mbembe, Achille", "shape": "dot", "title": "Mbembe, Achille"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Necropolitics", "label": "Necropolitics", "shape": "dot", "title": "Necropolitics"}, {"color": "green", "font": {"color": "white"}, "id": "Moyn, Samuel", "label": "Moyn, Samuel", "shape": "dot", "title": "Moyn, Samuel"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "On the Non-Globalization of Ideas ", "label": "On the Non-Globalization of Ideas ", "shape": "dot", "title": "On the Non-Globalization of Ideas "}, {"color": "green", "font": {"color": "white"}, "id": "Reed Jr., Aldoph", "label": "Reed Jr., Aldoph", "shape": "dot", "title": "Reed Jr., Aldoph"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Marx, Race, and Neoliberalism ", "label": "Marx, Race, and Neoliberalism ", "shape": "dot", "title": "Marx, Race, and Neoliberalism "}, {"color": "green", "font": {"color": "white"}, "id": "Spivak, Gayatri", "label": "Spivak, Gayatri", "shape": "dot", "title": "Spivak, Gayatri"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Can the Subaltern Speak? (Selections) ", "label": "Can the Subaltern Speak? (Selections) ", "shape": "dot", "title": "Can the Subaltern Speak? (Selections) "}, {"color": "green", "font": {"color": "white"}, "id": "Tagore, Rabindranath", "label": "Tagore, Rabindranath", "shape": "dot", "title": "Tagore, Rabindranath"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Three Essays from Literature", "label": "Three Essays from Literature", "shape": "dot", "title": "Three Essays from Literature"}, {"color": "green", "font": {"color": "white"}, "id": "Culler, Jonathan", "label": "Culler, Jonathan", "shape": "dot", "title": "Culler, Jonathan"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Literary theory: a very short introduction, 2nd ed.", "label": "Literary theory: a very short introduction, 2nd ed.", "shape": "dot", "title": "Literary theory: a very short introduction, 2nd ed."}, {"color": "red", "font": {"color": "white"}, "id": "Aashish Xaxa(I)", "label": "Aashish Xaxa(I)", "shape": "dot", "title": "Aashish Xaxa(I)\nHS 522 (History, Concepts and Theories of Development)"}, {"color": "green", "font": {"color": "white"}, "id": "Cowen, M. P, Shenton, R. W", "label": "Cowen, M. P, Shenton, R. W", "shape": "dot", "title": "Cowen, M. P, Shenton, R. W"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Doctrines of development", "label": "Doctrines of development", "shape": "dot", "title": "Doctrines of development"}, {"color": "green", "font": {"color": "white"}, "id": "Arturo Escobar by Escobar, Arturo", "label": "Arturo Escobar by Escobar, Arturo", "shape": "dot", "title": "Arturo Escobar by Escobar, Arturo"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Encountering development : the making and unmaking of the third world", "label": "Encountering development : the making and unmaking of the third world", "shape": "dot", "title": "Encountering development : the making and unmaking of the third world"}, {"color": "green", "font": {"color": "white"}, "id": "Desai, Vandana, Potter, Robert B", "label": "Desai, Vandana, Potter, Robert B", "shape": "dot", "title": "Desai, Vandana, Potter, Robert B"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Companion to development studies 3rd ed.", "label": "Companion to development studies 3rd ed.", "shape": "dot", "title": "Companion to development studies 3rd ed."}, {"color": "green", "font": {"color": "white"}, "id": "Kothari, Uma", "label": "Kothari, Uma", "shape": "dot", "title": "Kothari, Uma"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Radical history of development studies: individuals, institutions and ideologies", "label": "Radical history of development studies: individuals, institutions and ideologies", "shape": "dot", "title": "Radical history of development studies: individuals, institutions and ideologies"}, {"color": "green", "font": {"color": "white"}, "id": "Rodney, Walter", "label": "Rodney, Walter", "shape": "dot", "title": "Rodney, Walter"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "How Europe underdeveloped Africa", "label": "How Europe underdeveloped Africa", "shape": "dot", "title": "How Europe underdeveloped Africa"}, {"color": "green", "font": {"color": "white"}, "id": "Frank, Andre Gunder", "label": "Frank, Andre Gunder", "shape": "dot", "title": "Frank, Andre Gunder"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Reorient: global economy in the Asian age", "label": "Reorient: global economy in the Asian age", "shape": "dot", "title": "Reorient: global economy in the Asian age"}, {"color": "red", "font": {"color": "white"}, "id": "Aashish Xaxa", "label": "Aashish Xaxa", "shape": "dot", "title": "Aashish Xaxa\nHS 692-II (Special Topics in HSS: Sociology of Tribes)"}, {"color": "green", "font": {"color": "white"}, "id": "Mamdani, Mahmood", "label": "Mamdani, Mahmood", "shape": "dot", "title": "Mamdani, Mahmood"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Neither settler nor native: the making and unmaking of permanent minorities", "label": "Neither settler nor native: the making and unmaking of permanent minorities", "shape": "dot", "title": "Neither settler nor native: the making and unmaking of permanent minorities"}, {"color": "green", "font": {"color": "white"}, "id": "Xaxa, Virginius", "label": "Xaxa, Virginius", "shape": "dot", "title": "Xaxa, Virginius"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "State, society, and tribes: issues in post-colonial India", "label": "State, society, and tribes: issues in post-colonial India", "shape": "dot", "title": "State, society, and tribes: issues in post-colonial India"}, {"color": "green", "font": {"color": "white"}, "id": "Ambagudia, Jagannath, Xaxa, Virginius", "label": "Ambagudia, Jagannath, Xaxa, Virginius", "shape": "dot", "title": "Ambagudia, Jagannath, Xaxa, Virginius"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Handbook of tribal politics in India", "label": "Handbook of tribal politics in India", "shape": "dot", "title": "Handbook of tribal politics in India"}, {"color": "green", "font": {"color": "white"}, "id": "Munda, Ram Dayal, Mullick, S. Bosu", "label": "Munda, Ram Dayal, Mullick, S. Bosu", "shape": "dot", "title": "Munda, Ram Dayal, Mullick, S. Bosu"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Jharkhand movement: indigenous peoples\u0027 struggle for autonomy in India", "label": "Jharkhand movement: indigenous peoples\u0027 struggle for autonomy in India", "shape": "dot", "title": "Jharkhand movement: indigenous peoples\u0027 struggle for autonomy in India"}, {"color": "green", "font": {"color": "white"}, "id": "Choksi, Nishaant", "label": "Choksi, Nishaant", "shape": "dot", "title": "Choksi, Nishaant"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Graphic politics in eastern India: script and the quest for autonomy", "label": "Graphic politics in eastern India: script and the quest for autonomy", "shape": "dot", "title": "Graphic politics in eastern India: script and the quest for autonomy"}, {"color": "red", "font": {"color": "white"}, "id": "Jooyoung Kim", "label": "Jooyoung Kim", "shape": "dot", "title": "Jooyoung Kim\nHS 653_Academic Communication: Explanation and Paraphrasing"}, {"color": "green", "font": {"color": "white"}, "id": "Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. ", "label": "Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. ", "shape": "dot", "title": "Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Writing successful science proposals", "label": "Writing successful science proposals", "shape": "dot", "title": "Writing successful science proposals"}, {"color": "green", "font": {"color": "white"}, "id": "Atkins, Ros ", "label": "Atkins, Ros ", "shape": "dot", "title": "Atkins, Ros "}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Art of explanation: how to communicate with clarity and confidence", "label": "Art of explanation: how to communicate with clarity and confidence", "shape": "dot", "title": "Art of explanation: how to communicate with clarity and confidence"}]);
+                  edges = new vis.DataSet([{"color": "green", "from": "Rosaldo, Renato", "to": "Culture and truth: the remaking of social analysis: with a new introduction", "width": 3}, {"color": "green", "from": "Podolefsky, Aron and Brown, Peter J.", "to": "Applying Anthropology:An Introductory Reader", "width": 3}, {"color": "green", "from": "Levi-Strauss, Claude", "to": "Savage mind", "width": 3}, {"color": "green", "from": "Singh, Bhrigupati", "to": "Poverty and the quest for life: spiritual and material striving in rural India", "width": 3}, {"color": "green", "from": "Uberoi, Patrica", "to": "Anthropology in the east: the founders of Indian sociology and anthropology", "width": 3}, {"color": "green", "from": "B\u00f6ck, Monika and Rao, Aparna", "to": "Culture, creation, and procreation: concepts of kinship in South Asian practice", "width": 3}, {"color": "green", "from": "Sur, Malini", "to": "Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border", "width": 3}, {"color": "green", "from": "Graeber, David ", "to": "Toward an anthropological theory of value: the false coin of our own dreams", "width": 3}, {"color": "green", "from": "Lazar, Sian", "to": "Anthropology of citizenship: a reader", "width": 3}, {"color": "green", "from": "Uddin, Nasir", "to": "Rohingya: an ethnography of subhuman life ", "width": 3}, {"color": "green", "from": "Akmajian", "to": "Linguistics: an introduction to language and communication, 5th ed.", "width": 3}, {"color": "green", "from": "Ahearn, Laura M. ", "to": "Living language: an introduction to linguistic anthropology ", "width": 3}, {"color": "green", "from": "Ungerer, Friedrich ", "to": "Introduction to cognitive linguistics", "width": 3}, {"color": "green", "from": "Kramer, Seth", "to": "Linguists", "width": 3}, {"color": "green", "from": "Milroy, Lesley", "to": "Sociolinguistics: method and interpretation", "width": 3}, {"color": "green", "from": "Haywood, John", "to": "Penguin historical atlas of the vikings", "width": 3}, {"color": "green", "from": "Maisels, Charles Keith", "to": "Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China", "width": 3}, {"color": "green", "from": "Chandra, Satish", "to": "Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat", "width": 3}, {"color": "green", "from": "Chandra, Satish", "to": "Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)", "width": 3}, {"color": "green", "from": "Shelach-Lavi, Gideon", "to": "Archaeology of early China: from prehistory to the Han dynasty", "width": 3}, {"color": "green", "from": "Bandyopadhyay, Sekhar", "to": "From Plassey to partition: a history of modern India", "width": 3}, {"color": "green", "from": "Bandyopadhyay, Sekhar", "to": "From plassey to partition and after: a history of modern India, 2nd ed.", "width": 3}, {"color": "green", "from": "Bauer, Susan Wise", "to": "History of the ancient world: from the earliest accounts to the fall of Rome", "width": 3}, {"color": "green", "from": "Trigger, Bruce G.", "to": "Understanding early civilizations: a comparative study", "width": 3}, {"color": "green", "from": "Parpola, Asko", "to": "History of ancient and early medieval India: from the stone age to the 12th century ", "width": 3}, {"color": "green", "from": "Parpola, Asko", "to": "The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions.", "width": 3}, {"color": "green", "from": "Singh, Upinder", "to": "History of ancient and early medieval India: from the stone age to the 12th century", "width": 3}, {"color": "green", "from": "Agrawal, D. P", "to": "Indus civilization: an interdisciplinary perspective", "width": 3}, {"color": "green", "from": "Agrawal, D. P \u0026 Kharakwal, J. S", "to": "South Asian prehistory: a multidisciplinary study", "width": 3}, {"color": "green", "from": "Lal, B. B.", "to": "Sarasvati flows on: the continuity of Indian culture", "width": 3}, {"color": "green", "from": "Miller, H.M.L.", "to": "Archaeological approaches to technology", "width": 3}, {"color": "green", "from": "Morley, Iain \u0026 Renfrew, Colin", "to": "Archaeology of measurement: comprehending heaven, earth and time in ancient societies", "width": 3}, {"color": "green", "from": "Parpola, Asko", "to": "Deciphering the indus script", "width": 3}, {"color": "green", "from": "Possehl, G.L.", "to": "Ancient cities of the Indus", "width": 3}, {"color": "green", "from": "Ahearn, Laura M", "to": "Living language: an introduction to linguistic anthropology 2nd ed.", "width": 3}, {"color": "green", "from": "Akmajian, Adrian, Farmer, Ann K, Demers, Richard A", "to": "Linguistics : an introduction to language and communication 5th ed", "width": 3}, {"color": "green", "from": "Ungerer, Friedrich \u0026 Schmid, Hans-Jorg", "to": "Introduction to cognitive linguistics", "width": 3}, {"color": "green", "from": "Floridi , Luciano", "to": "Cambridge handbook of information and computer ethics", "width": 3}, {"color": "green", "from": "Baudrillard, Jean", "to": "Simulacra and Simulation", "width": 3}, {"color": "green", "from": "Turkle, Sherry", "to": "The Second Self: Computers and the Human Spirit", "width": 3}, {"color": "green", "from": "Zuboff, Shoshana", "to": "Age of Surveillance Capitalism: the fight for a human future at the new frontier of power", "width": 3}, {"color": "green", "from": "Perez, Rosa Maria [Ed.] | Fruzzetti, Lina M [Ed.]", "to": "Transdisciplinary ethnography in India: women in the field", "width": 3}, {"color": "green", "from": "Smith, Linda Tuhiwai", "to": "Decolonizing methodologies: research and indigenous people", "width": 3}, {"color": "green", "from": "Williams, Bianca C", "to": "Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism", "width": 3}, {"color": "green", "from": "Braidotti, Rosi", "to": "Posthuman", "width": 3}, {"color": "green", "from": "Davies, Tony", "to": "Humanism 2nd ed.", "width": 3}, {"color": "green", "from": "Derrida, Jacques", "to": "Animal that therefore I am", "width": 3}, {"color": "green", "from": "Foucault, Michel", "to": "Order of things : an archaeology of the human sciences 2nd ed.", "width": 3}, {"color": "green", "from": "Haraway, Donna J", "to": "When species meet", "width": 3}, {"color": "green", "from": "Kristeva, Julia", "to": "Powers of horror: an essay on abjection", "width": 3}, {"color": "green", "from": "Wolfe, Cary", "to": "What is posthumanism?", "width": 3}, {"color": "green", "from": "Thapar, Romila", "to": "Somanatha: the many voices of a history", "width": 3}, {"color": "green", "from": "White, Hayden", "to": "Content of the form: narrative discourse and historical representation", "width": 3}, {"color": "green", "from": "Chatterjee, Partha", "to": "Nation and its fragments: colonial and postcolonial histories", "width": 3}, {"color": "green", "from": "Scott,James C", "to": "Weapons of the weak everyday forms of peasant resistance", "width": 3}, {"color": "green", "from": "Loomba, Ania", "to": "Colonialism postcolonialism, 2nd ed", "width": 3}, {"color": "green", "from": "Said, Edward W", "to": "Orientalism: western perceptions of the orient", "width": 3}, {"color": "green", "from": "Urry, John", "to": "Tourist gaze 3.0", "width": 3}, {"color": "green", "from": "MacCannell, Dean ", "to": "Tourist: a new theory of the leisure class, with a new introduction", "width": 3}, {"color": "green", "from": "Sainath, P", "to": "Everybody loves a good drought", "width": 3}, {"color": "green", "from": "Aiyadurai, Ambika", "to": "Tigers are our brothers: anthropology of wildlife conservation in Northeast India", "width": 3}, {"color": "green", "from": "Gadgil, Madhav, Guha, Ramachandra", "to": "This fissured land", "width": 3}, {"color": "green", "from": "Sharma, Mukul", "to": "Caste and nature :Dalits and Indian environmental politics", "width": 3}, {"color": "green", "from": "Tucker, Richard P", "to": "Forest history of India", "width": 3}, {"color": "green", "from": "Guha, Ramachandra and Alier, Joan Mart\u00ednez", "to": "Varieties of environmentalism: essays north and south", "width": 3}, {"color": "green", "from": "Cederl\u00f6f, Gunnel and Sivaramakrishnan, K.", "to": "Ecological nationalisms: nature, livelihoods, and identities in south Asia", "width": 3}, {"color": "green", "from": "Aflalo, Agnes", "to": "Failed assassination of psychoanalysis", "width": 3}, {"color": "green", "from": "Ansermet, Francois", "to": "Biology of freedom", "width": 3}, {"color": "green", "from": "Burke, Michael, Troscianko Emily T", "to": "Cognitive literary science: dialogues between literature and cognition", "width": 3}, {"color": "green", "from": "Danta, Chris, Groth, Helen", "to": "Mindful aesthetics: literature and the science of mind", "width": 3}, {"color": "green", "from": "Dennett, Daniel Clement", "to": "Content and consciousness", "width": 3}, {"color": "green", "from": "Hulle, Dirk Van", "to": "Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond", "width": 3}, {"color": "green", "from": "Lakoff, George, Johnson, Mark", "to": "Metaphors we live by", "width": 3}, {"color": "green", "from": "Lakoff, George, Johnson, Mark", "to": "Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson", "width": 3}, {"color": "green", "from": "Laurent, Eric", "to": "Lost in cognition: psychoanalysis and the cognitive sciences", "width": 3}, {"color": "green", "from": "Malabou, Catherine, Jeannerod, Marc, Rand, Sebastian", "to": "What should we do with our brain?", "width": 3}, {"color": "green", "from": "Malabou, Catherine, Shread, Carolyn, Crockett, Clayton", "to": "Plasticity at the dusk of writing: dialectic destruction deconstruction", "width": 3}, {"color": "green", "from": "Malabou, Catherine, Miller, Steven", "to": "New wounded: from neurosis to brain damage", "width": 3}, {"color": "green", "from": "Malabou, Catherine, Miller, Steven", "to": "Ontology of the accident: an essay on destructive plasticity", "width": 3}, {"color": "green", "from": "Johnston, Adrian, Malabou, Catherine", "to": "Self and emotional life: philosophy psychoanalysis and neuroscience", "width": 3}, {"color": "green", "from": "Menary, Richard", "to": "Extended mind", "width": 3}, {"color": "green", "from": "Misra, Pushpa", "to": "Scientific status of psychoanalysis: evidence and confirmation", "width": 3}, {"color": "green", "from": "Varela, Francisco J, Thompson, Evan", "to": "Embodied mind : cognitive science and human experience", "width": 3}, {"color": "green", "from": "Todaro, Michael P, Smith, Stephen C", "to": "Economic development 8th ed.", "width": 3}, {"color": "green", "from": "Todaro, Michael P, Smith, Stephen C", "to": "Economic development 13th ed.", "width": 3}, {"color": "green", "from": "Janvry, Alain de and  Sadoulet, Elisabeth", "to": "Development economics: theory and practice", "width": 3}, {"color": "green", "from": "Ray, Debraj", "to": "Development economics: theory and practice 2nd ed.", "width": 3}, {"color": "green", "from": "Banerjee,Abhijit V. , Duflo, Esther", "to": "Good economics for hard times: better answers to our biggest problems", "width": 3}, {"color": "green", "from": "Agresti, Alan", "to": "Statistical methods for the social sciences", "width": 3}, {"color": "green", "from": "Weinberg, Sharon Lawner, Abramowitz, Sarah Knapp", "to": "Statistics using stata: an integrative approach 2nd ed.", "width": 3}, {"color": "green", "from": "Hanneman, Robert, Kposowa, Augustine J", "to": "Basic statistics for social research", "width": 3}, {"color": "green", "from": "Babbie, Earl R", "to": "Practice of social research, 13th ed.", "width": 3}, {"color": "green", "from": "Brown, Percy", "to": "Indian architecture: buddhist and hindu periods", "width": 3}, {"color": "green", "from": "Gupta, S.P", "to": "Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan", "width": 3}, {"color": "green", "from": "Huntington, Susan L, J. Huntington", "to": "Art of ancient India: Buddhist, Hindu, Jain", "width": 3}, {"color": "green", "from": "Spink, Walter M", "to": "Ajanta: history and development, vol. I: the end of the golden age", "width": 3}, {"color": "green", "from": "Spink, Walter M", "to": "Ajanta: history and development, volume 2 arguments about Ajanta", "width": 3}, {"color": "green", "from": "Spink, Walter M", "to": "Ajanta: history and development, volume 3 the arrival of the uninvited", "width": 3}, {"color": "green", "from": "Spink, Walter M", "to": "Ajanta: history and development, vol. IV: painting, sculpture, architecture year", "width": 3}, {"color": "green", "from": "Spink, Walter M", "to": "Ajanta: history and development, vol. V: cave by cave", "width": 3}, {"color": "green", "from": "Thapar, Romila", "to": "Penguin History of Early India: from the origins to AD 1300", "width": 3}, {"color": "green", "from": "Wolf, Virginia", "to": "The Mark on the Wall", "width": 3}, {"color": "green", "from": "Borges, Jorge Luis", "to": "The Book of Sand", "width": 3}, {"color": "green", "from": "Chughtai, Ishmat", "to": "The Quilt", "width": 3}, {"color": "green", "from": "Saadat Hasan Manto", "to": "Dog of Titwal", "width": 3}, {"color": "green", "from": "Saadat Hasan Manto", "to": "Toba Tek Singh", "width": 3}, {"color": "green", "from": "Thiong\u2019o, Ngugi Wa", "to": "The Upright Revolution or Why Humans Walk Upright", "width": 3}, {"color": "green", "from": "Ananthamurthy, U.R.", "to": "Towards the Concept of Nationhood: Languages and Literatures in India", "width": 3}, {"color": "green", "from": "Barthes, Roland ", "to": "The Death of the Author ", "width": 3}, {"color": "green", "from": "Belsey, Catherine ", "to": "Critical Practice (Selections) ", "width": 3}, {"color": "green", "from": "Chaudhari,  Maitrayee", "to": "Feminism in India: The Tale and Its Telling ", "width": 3}, {"color": "green", "from": "Crenshaw, Kimberley", "to": "Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics", "width": 3}, {"color": "green", "from": "Culler Jonathan", "to": "Literary Theory: A Very Short Introduction", "width": 3}, {"color": "green", "from": "Derrida, Jacques", "to": "Structure, Sign and Play in the Discourse of the Human Sciences ", "width": 3}, {"color": "green", "from": "Derrida, Jacques", "to": "Writing and Difference (Selections) ", "width": 3}, {"color": "green", "from": "Michel, Foucault", "to": "What is an Author?", "width": 3}, {"color": "green", "from": "Horkheimer, Max", "to": "Traditional and Critical Theory", "width": 3}, {"color": "green", "from": "Kothari, Rita", "to": "Translating India (Selections) ", "width": 3}, {"color": "green", "from": "Lacan, Jacques", "to": "Lituraterre", "width": 3}, {"color": "green", "from": "Limbale, Sharankumar", "to": "Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) ", "width": 3}, {"color": "green", "from": "Macherey, Pierre", "to": "A Theory of Literary Production (Selections) ", "width": 3}, {"color": "green", "from": "Mbembe, Achille", "to": "Necropolitics", "width": 3}, {"color": "green", "from": "Moyn, Samuel", "to": "On the Non-Globalization of Ideas ", "width": 3}, {"color": "green", "from": "Reed Jr., Aldoph", "to": "Marx, Race, and Neoliberalism ", "width": 3}, {"color": "green", "from": "Spivak, Gayatri", "to": "Can the Subaltern Speak? (Selections) ", "width": 3}, {"color": "green", "from": "Tagore, Rabindranath", "to": "Three Essays from Literature", "width": 3}, {"color": "green", "from": "Culler, Jonathan", "to": "Literary theory: a very short introduction, 2nd ed.", "width": 3}, {"color": "green", "from": "Cowen, M. P, Shenton, R. W", "to": "Doctrines of development", "width": 3}, {"color": "green", "from": "Arturo Escobar by Escobar, Arturo", "to": "Encountering development : the making and unmaking of the third world", "width": 3}, {"color": "green", "from": "Desai, Vandana, Potter, Robert B", "to": "Companion to development studies 3rd ed.", "width": 3}, {"color": "green", "from": "Kothari, Uma", "to": "Radical history of development studies: individuals, institutions and ideologies", "width": 3}, {"color": "green", "from": "Rodney, Walter", "to": "How Europe underdeveloped Africa", "width": 3}, {"color": "green", "from": "Frank, Andre Gunder", "to": "Reorient: global economy in the Asian age", "width": 3}, {"color": "green", "from": "Mamdani, Mahmood", "to": "Neither settler nor native: the making and unmaking of permanent minorities", "width": 3}, {"color": "green", "from": "Xaxa, Virginius", "to": "State, society, and tribes: issues in post-colonial India", "width": 3}, {"color": "green", "from": "Ambagudia, Jagannath, Xaxa, Virginius", "to": "Handbook of tribal politics in India", "width": 3}, {"color": "green", "from": "Munda, Ram Dayal, Mullick, S. Bosu", "to": "Jharkhand movement: indigenous peoples\u0027 struggle for autonomy in India", "width": 3}, {"color": "green", "from": "Choksi, Nishaant", "to": "Graphic politics in eastern India: script and the quest for autonomy", "width": 3}, {"color": "green", "from": "Friedland, Andrew J., Folt, Carol L and Mercer, Jennifer L. ", "to": "Writing successful science proposals", "width": 3}, {"color": "green", "from": "Atkins, Ros ", "to": "Art of explanation: how to communicate with clarity and confidence", "width": 3}, {"color": "red", "from": "Nishaant Choksi ", "to": "Applying Anthropology:An Introductory Reader"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Culture and truth: the remaking of social analysis: with a new introduction"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Savage mind"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Poverty and the quest for life: spiritual and material striving in rural India"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Anthropology in the east: the founders of Indian sociology and anthropology"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Culture, creation, and procreation: concepts of kinship in South Asian practice"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Jungle passports: fences, mobility, and citizenship at the northeast India-Bangladesh border"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Toward an anthropological theory of value: the false coin of our own dreams"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Anthropology of citizenship: a reader"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Rohingya: an ethnography of subhuman life "}, {"color": "red", "from": "Nishaant Choksi ", "to": "Linguistics: an introduction to language and communication, 5th ed."}, {"color": "red", "from": "Nishaant Choksi ", "to": "Living language: an introduction to linguistic anthropology "}, {"color": "red", "from": "Nishaant Choksi ", "to": "Introduction to cognitive linguistics"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Linguists"}, {"color": "red", "from": "Nishaant Choksi ", "to": "Sociolinguistics: method and interpretation"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Early civilizations of the old world: the formative histories of Egypt, the Levant, Mesopotamia, India and China"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Penguin historical atlas of the vikings"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Medieval India : from Sultanat to the Mughals, part - 1 : Delhi Sultanat"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Medieval India : from sultanat to Mughals, part - 2 : Mughal Empire (9526 - 1748)"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Archaeology of early China: from prehistory to the Han dynasty"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "From Plassey to partition: a history of modern India"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "From plassey to partition and after: a history of modern India, 2nd ed."}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "History of the ancient world: from the earliest accounts to the fall of Rome"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "Understanding early civilizations: a comparative study"}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "History of ancient and early medieval India: from the stone age to the 12th century "}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "The Sky-Garment: A study of the Harappan religion and its relation to the Mesopotamian and later Indian religions."}, {"color": "red", "from": "Madhumita Sengupta, V.N. Prabhakar and Sharada CV", "to": "History of ancient and early medieval India: from the stone age to the 12th century"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "South Asian prehistory: a multidisciplinary study"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Indus civilization: an interdisciplinary perspective"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Sarasvati flows on: the continuity of Indian culture"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Archaeological approaches to technology"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Archaeology of measurement: comprehending heaven, earth and time in ancient societies"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Deciphering the indus script"}, {"color": "red", "from": "V N Prabhakar(I)", "to": "Ancient cities of the Indus"}, {"color": "red", "from": "Nishaant Choksi(I)", "to": "Linguistics : an introduction to language and communication 5th ed"}, {"color": "red", "from": "Nishaant Choksi(I)", "to": "Living language: an introduction to linguistic anthropology 2nd ed."}, {"color": "red", "from": "Nishaant Choksi(I)", "to": "Introduction to cognitive linguistics"}, {"color": "red", "from": "Nuno Guimaraes(I)", "to": "Simulacra and Simulation"}, {"color": "red", "from": "Nuno Guimaraes(I)", "to": "Cambridge handbook of information and computer ethics"}, {"color": "red", "from": "Nuno Guimaraes(I)", "to": "The Second Self: Computers and the Human Spirit"}, {"color": "red", "from": "Nuno Guimaraes(I)", "to": "Age of Surveillance Capitalism: the fight for a human future at the new frontier of power"}, {"color": "red", "from": "Rosa Maria Perez(I)", "to": "Applying Anthropology:An Introductory Reader"}, {"color": "red", "from": "Rosa Maria Perez(I)", "to": "Transdisciplinary ethnography in India: women in the field"}, {"color": "red", "from": "Rosa Maria Perez(I)", "to": "Decolonizing methodologies: research and indigenous people"}, {"color": "red", "from": "Rosa Maria Perez(I)", "to": "Pursuit of happiness: black women, diasporic dreams, and the politics of emotional transnationalism"}, {"color": "red", "from": "Angus McBlane(I)", "to": "Simulacra and Simulation"}, {"color": "red", "from": "Angus McBlane(I)", "to": "Posthuman"}, {"color": "red", "from": "Angus McBlane(I)", "to": "The Second Self: Computers and the Human Spirit"}, {"color": "red", "from": "Angus McBlane(I)", "to": "Humanism 2nd ed."}, {"color": "red", "from": "Angus McBlane(I)", "to": "Animal that therefore I am"}, {"color": "red", "from": "Angus McBlane(I)", "to": "Order of things : an archaeology of the human sciences 2nd ed."}, {"color": "red", "from": "Angus McBlane(I)", "to": "When species meet"}, {"color": "red", "from": "Angus McBlane(I)", "to": "Powers of horror: an essay on abjection"}, {"color": "red", "from": "Angus McBlane(I)", "to": "What is posthumanism?"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Content of the form: narrative discourse and historical representation"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Somanatha: the many voices of a history"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Nation and its fragments: colonial and postcolonial histories"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Weapons of the weak everyday forms of peasant resistance"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Colonialism postcolonialism, 2nd ed"}, {"color": "red", "from": "Madhumita Sengupta(I)", "to": "Orientalism: western perceptions of the orient"}, {"color": "red", "from": "Ambika Aiyadurai", "to": "Tourist: a new theory of the leisure class, with a new introduction"}, {"color": "red", "from": "Ambika Aiyadurai", "to": "Tourist gaze 3.0"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Everybody loves a good drought"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Tigers are our brothers: anthropology of wildlife conservation in Northeast India"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "This fissured land"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Caste and nature :Dalits and Indian environmental politics"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Forest history of India"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Varieties of environmentalism: essays north and south"}, {"color": "red", "from": "Ambika Aiyadurai(I)", "to": "Ecological nationalisms: nature, livelihoods, and identities in south Asia"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Biology of freedom"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Failed assassination of psychoanalysis"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Cognitive literary science: dialogues between literature and cognition"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Mindful aesthetics: literature and the science of mind"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Content and consciousness"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Modern manuscripts: the extended mind and creative undoing from Darwin to Beckett and beyond"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Metaphors we live by"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Philosophy in the flesh : the embodied mind and its challenge to Western thought George Lakoff and Mark Johnson"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Lost in cognition: psychoanalysis and the cognitive sciences"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "What should we do with our brain?"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Plasticity at the dusk of writing: dialectic destruction deconstruction"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "New wounded: from neurosis to brain damage"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Ontology of the accident: an essay on destructive plasticity"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Self and emotional life: philosophy psychoanalysis and neuroscience"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Extended mind"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Scientific status of psychoanalysis: evidence and confirmation"}, {"color": "red", "from": "Arka Chattopadhyay", "to": "Embodied mind : cognitive science and human experience"}, {"color": "red", "from": "Deepak Singhania", "to": "Economic development 13th ed."}, {"color": "red", "from": "Deepak Singhania", "to": "Economic development 8th ed."}, {"color": "red", "from": "Deepak Singhania", "to": "Development economics: theory and practice"}, {"color": "red", "from": "Deepak Singhania", "to": "Development economics: theory and practice 2nd ed."}, {"color": "red", "from": "Deepak Singhania", "to": "Good economics for hard times: better answers to our biggest problems"}, {"color": "red", "from": "Deepak Singhania(I)", "to": "Statistics using stata: an integrative approach 2nd ed."}, {"color": "red", "from": "Deepak Singhania(I)", "to": "Statistical methods for the social sciences"}, {"color": "red", "from": "Deepak Singhania(I)", "to": "Basic statistics for social research"}, {"color": "red", "from": "Deepak Singhania(I)", "to": "Practice of social research, 13th ed."}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Roots of Indian art: a detailed study of the formative period of Indian art and architecture, third and second centuries B.C., Mauryan and late Mauryan"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Indian architecture: buddhist and hindu periods"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Art of ancient India: Buddhist, Hindu, Jain"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Ajanta: history and development, vol. I: the end of the golden age"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Ajanta: history and development, volume 2 arguments about Ajanta"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Ajanta: history and development, volume 3 the arrival of the uninvited"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Ajanta: history and development, vol. IV: painting, sculpture, architecture year"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Ajanta: history and development, vol. V: cave by cave"}, {"color": "red", "from": "Alok Kumar Kanungo", "to": "Penguin History of Early India: from the origins to AD 1300"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "The Book of Sand"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "The Mark on the Wall"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "The Quilt"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Dog of Titwal"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Toba Tek Singh"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "The Upright Revolution or Why Humans Walk Upright"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Towards the Concept of Nationhood: Languages and Literatures in India"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "The Death of the Author "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Critical Practice (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Feminism in India: The Tale and Its Telling "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Demarginalizing the Intersection of Race and Sex: A Black Feminist Critique of Antidiscrimination Doctrine, Feminist Theory, and Anti-Racist Politics"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Literary Theory: A Very Short Introduction"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Structure, Sign and Play in the Discourse of the Human Sciences "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Writing and Difference (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "What is an Author?"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Traditional and Critical Theory"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Translating India (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Lituraterre"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Towards An Aesthetic Of Dalit Literature: History, Controversies And Considerations (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "A Theory of Literary Production (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Necropolitics"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "On the Non-Globalization of Ideas "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Marx, Race, and Neoliberalism "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Orientalism: western perceptions of the orient"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Can the Subaltern Speak? (Selections) "}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Three Essays from Literature"}, {"color": "red", "from": "Arka Chattopadhyay(I)", "to": "Literary theory: a very short introduction, 2nd ed."}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "Encountering development : the making and unmaking of the third world"}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "Doctrines of development"}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "Companion to development studies 3rd ed."}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "Radical history of development studies: individuals, institutions and ideologies"}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "How Europe underdeveloped Africa"}, {"color": "red", "from": "Aashish Xaxa(I)", "to": "Reorient: global economy in the Asian age"}, {"color": "red", "from": "Aashish Xaxa", "to": "State, society, and tribes: issues in post-colonial India"}, {"color": "red", "from": "Aashish Xaxa", "to": "Neither settler nor native: the making and unmaking of permanent minorities"}, {"color": "red", "from": "Aashish Xaxa", "to": "Handbook of tribal politics in India"}, {"color": "red", "from": "Aashish Xaxa", "to": "Jharkhand movement: indigenous peoples\u0027 struggle for autonomy in India"}, {"color": "red", "from": "Aashish Xaxa", "to": "How Europe underdeveloped Africa"}, {"color": "red", "from": "Aashish Xaxa", "to": "Graphic politics in eastern India: script and the quest for autonomy"}, {"color": "red", "from": "Jooyoung Kim", "to": "Art of explanation: how to communicate with clarity and confidence"}, {"color": "red", "from": "Jooyoung Kim", "to": "Writing successful science proposals"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0,
+            "damping": 0.09,
+            "nodeDistance": 100,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
